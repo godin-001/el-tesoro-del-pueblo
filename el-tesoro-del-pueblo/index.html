@@ -1033,6 +1033,9 @@
 <body>
 <div id="screen"></div>
 <button id="music-btn" onclick="toggleBGM()" title="Silenciar música">🎵</button>
+<audio id="bgm-audio" loop preload="auto">
+  <source src="https://drive.usercontent.google.com/download?id=1X3MlUBs9JlU6CUHqe5lm9D8ktfwlKOtx&export=download" type="audio/mpeg">
+</audio>
 <div id="sat-hud" style="display:none;">
   <span class="hud-sats">⚡ <span id="hud-balance">0</span> sats</span>
   <span class="hud-streak" id="hud-streak"></span>
@@ -1326,114 +1329,23 @@ function soundLose()    { _tone(392,0.14,'sine',0.28,0); _tone(349,0.14,'sine',0
 function soundClick()   { _tone(600,0.05,'sine',0.12,0); }
 
 // ── BACKGROUND MUSIC ────────────────────────────────
-// Bolero lento · 8 compases de 4/4 · beat = 0.6 s → loop ~19.2 s
-// Estilo: Bésame Mucho / Sabor a Mí · escala Do menor
-const BGM_SEQ = [
-  // Compás 1 — apertura melancólica
-  [622.25, 0.60, 0.55], // Eb5
-  [587.33, 0.60, 0.48], // D5
-  [523.25, 1.20, 0.60], // C5 (mitad — suspiro)
-  // Compás 2 — respuesta ascendente
-  [466.16, 0.60, 0.52], // Bb4
-  [523.25, 0.60, 0.45], // C5
-  [587.33, 1.20, 0.55], // D5 (mitad)
-  // Compás 3 — subida dramática
-  [784.00, 0.60, 0.55], // G5
-  [698.46, 0.60, 0.48], // F5
-  [622.25, 1.20, 0.60], // Eb5 (mitad)
-  // Compás 4 — nota larga + silencio (respiro)
-  [587.33, 1.80, 0.55], // D5 (3 tiempos)
-  [0,      0.60, 0   ], // silencio
-  // Compás 5 — descenso cromático (nostalgia)
-  [523.25, 0.60, 0.52], // C5
-  [466.16, 0.60, 0.48], // Bb4
-  [415.30, 0.60, 0.45], // Ab4
-  [392.00, 0.60, 0.42], // G4
-  // Compás 6 — cadencia interior
-  [349.23, 0.60, 0.45], // F4
-  [392.00, 0.60, 0.45], // G4
-  [415.30, 1.20, 0.55], // Ab4 (mitad)
-  // Compás 7 — reexposición con esperanza
-  [466.16, 0.60, 0.52], // Bb4
-  [523.25, 0.60, 0.48], // C5
-  [587.33, 1.20, 0.55], // D5 (mitad)
-  // Compás 8 — resolución final (redonda)
-  [523.25, 2.40, 0.55], // C5 (4 tiempos)
-];
-
-let _bgm = null;
-
-function bgmPluck(freq, startTime, vol) {
-  if (!freq || !_bgm) return;
-  try {
-    const ctx  = _ctx();
-    const osc  = ctx.createOscillator();
-    const lfo  = ctx.createOscillator(); // vibrato
-    const lfoG = ctx.createGain();
-    const gain = ctx.createGain();
-
-    osc.connect(gain);
-    gain.connect(_bgm.masterGain);
-
-    // Timbre bolero: onda seno (suave, aterciopelada)
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(freq, startTime);
-
-    // Vibrato sutil — arranca 0.2 s después, como cantante de bolero
-    lfo.type = 'sine';
-    lfo.frequency.setValueAtTime(5.5, startTime); // 5.5 Hz
-    lfoG.gain.setValueAtTime(0, startTime);
-    lfoG.gain.setTargetAtTime(freq * 0.0045, startTime + 0.2, 0.1);
-    lfo.connect(lfoG);
-    lfoG.connect(osc.frequency);
-    lfo.start(startTime);
-    lfo.stop(startTime + 2.2);
-
-    // Envelope largo y suave (legato)
-    gain.gain.setValueAtTime(0, startTime);
-    gain.gain.linearRampToValueAtTime(vol * 0.30, startTime + 0.03);
-    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 1.9);
-
-    osc.start(startTime);
-    osc.stop(startTime + 1.95);
-  } catch(e) {}
-}
-
-function bgmSchedule() {
-  if (!_bgm || _bgm.muted) return;
-  const ctx = _ctx();
-  while (_bgm.nextBeat < ctx.currentTime + 0.25) {
-    const [freq, dur, vel] = BGM_SEQ[_bgm.seqIdx % BGM_SEQ.length];
-    if (freq > 0) bgmPluck(freq, _bgm.nextBeat, vel);
-    _bgm.nextBeat += dur;
-    _bgm.seqIdx++;
-  }
-  _bgm.timer = setTimeout(bgmSchedule, 100);
-}
-
 function startBGM() {
-  if (_bgm) return;
-  try {
-    const ctx = _ctx();
-    const masterGain = ctx.createGain();
-    masterGain.gain.value = 0.30;
-    masterGain.connect(ctx.destination);
-    _bgm = { masterGain, nextBeat: ctx.currentTime + 0.4, seqIdx: 0, timer: null, muted: false };
-    bgmSchedule();
-  } catch(e) {}
+  const audio = document.getElementById('bgm-audio');
+  if (!audio) return;
+  audio.volume = 0.45;
+  audio.play().catch(() => {});
 }
 
 function toggleBGM() {
-  const btn = document.getElementById('music-btn');
-  if (!_bgm) { startBGM(); return; }
-  _bgm.muted = !_bgm.muted;
-  if (_bgm.muted) {
-    _bgm.masterGain.gain.setTargetAtTime(0, _ctx().currentTime, 0.3);
-    if (btn) { btn.textContent = '🔇'; btn.title = 'Activar música'; }
-  } else {
-    _bgm.masterGain.gain.setTargetAtTime(0.30, _ctx().currentTime, 0.3);
-    bgmSchedule();
+  const audio = document.getElementById('bgm-audio');
+  const btn   = document.getElementById('music-btn');
+  if (!audio) return;
+  if (audio.paused) {
+    audio.play().catch(() => {});
     if (btn) { btn.textContent = '🎵'; btn.title = 'Silenciar música'; }
+  } else {
+    audio.pause();
+    if (btn) { btn.textContent = '🔇'; btn.title = 'Activar música'; }
   }
 }
 
