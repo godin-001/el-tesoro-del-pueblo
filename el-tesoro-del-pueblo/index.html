@@ -1,0 +1,2360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>El Tesoro del Pueblo — Aprende Bitcoin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Special+Elite&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sepia-dark:   #0f0900;
+      --sepia-mid:    #1e1100;
+      --sepia-warm:   #3b2200;
+      --gold:         #c9a227;
+      --gold-light:   #f0d080;
+      --cream:        #f5e6c8;
+      --cream-dim:    #d4c5a0;
+      --red-diva:     #8b1a1a;
+      --brown-mid:    #6b4c2a;
+      --film-border:  #2a1800;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--sepia-dark);
+      color: var(--cream);
+      font-family: 'Lora', serif;
+      overflow: hidden;
+    }
+
+    /* ── FILM GRAIN OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 1000; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.35;
+      mix-blend-mode: overlay;
+    }
+
+    /* ── FILM STRIP BORDER ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 999; pointer-events: none;
+      border: 8px solid var(--film-border);
+      box-shadow: inset 0 0 0 3px var(--gold), inset 0 0 40px rgba(0,0,0,0.8);
+    }
+
+    /* ── SCREEN CONTAINER ── */
+    #screen {
+      position: relative; width: 100vw; height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+
+    /* ── TRANSITIONS ── */
+    .fade-in  { animation: fadeIn  0.6s ease forwards; }
+    .fade-out { animation: fadeOut 0.4s ease forwards; }
+    @keyframes fadeIn  { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+    /* ══════════════════════════════
+       TITLE SCREEN
+    ══════════════════════════════ */
+    #title-screen {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      width: 100%; height: 100%;
+      background: radial-gradient(ellipse at center, #2a1400 0%, #0f0900 70%);
+      text-align: center; padding: 2rem;
+    }
+
+    .film-stars {
+      color: var(--gold); font-size: 1.4rem; letter-spacing: 1rem;
+      margin-bottom: 0.5rem; opacity: 0.7;
+    }
+
+    .title-label {
+      font-family: 'Special Elite', cursive;
+      color: var(--gold); font-size: 0.9rem;
+      letter-spacing: 0.4rem; text-transform: uppercase;
+      margin-bottom: 1rem; opacity: 0.8;
+    }
+
+    .main-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      font-weight: 700; font-style: italic;
+      color: var(--gold-light);
+      line-height: 1.1;
+      text-shadow: 0 0 40px rgba(201,162,39,0.4), 2px 2px 0 rgba(0,0,0,0.8);
+      margin-bottom: 0.3rem;
+    }
+
+    .subtitle {
+      font-family: 'Special Elite', cursive;
+      color: var(--cream-dim); font-size: 1rem;
+      letter-spacing: 0.2rem; margin-bottom: 2.5rem;
+    }
+
+    .divider {
+      width: 200px; height: 2px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      margin: 1.2rem auto;
+    }
+
+    .name-form {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 1rem;
+      width: 100%; max-width: 380px;
+    }
+
+    .name-label {
+      font-family: 'Special Elite', cursive;
+      color: var(--cream-dim); font-size: 0.95rem;
+      letter-spacing: 0.15rem;
+    }
+
+    .name-input {
+      width: 100%; padding: 0.9rem 1.4rem;
+      background: rgba(255,255,255,0.05);
+      border: 2px solid var(--gold);
+      border-radius: 4px;
+      color: var(--cream); font-family: 'Lora', serif; font-size: 1.2rem;
+      text-align: center; outline: none;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .name-input::placeholder { color: rgba(245,230,200,0.3); }
+    .name-input:focus { border-color: var(--gold-light); background: rgba(255,255,255,0.08); }
+
+    .btn-start {
+      padding: 1rem 2.5rem;
+      background: linear-gradient(135deg, var(--gold) 0%, #a07c1a 100%);
+      border: none; border-radius: 4px;
+      color: var(--sepia-dark); font-family: 'Playfair Display', serif;
+      font-size: 1.1rem; font-weight: 700; letter-spacing: 0.1rem;
+      cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(201,162,39,0.3);
+    }
+    .btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(201,162,39,0.5); }
+    .btn-start:active { transform: translateY(0); }
+
+    .credits {
+      margin-top: 2.5rem;
+      font-family: 'Special Elite', cursive;
+      color: rgba(245,230,200,0.3); font-size: 0.75rem;
+      letter-spacing: 0.2rem;
+    }
+
+    /* ══════════════════════════════
+       ACT INTRO CARD
+    ══════════════════════════════ */
+    #act-intro {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      width: 100%; height: 100%;
+      background: var(--sepia-dark);
+      text-align: center; padding: 2rem;
+    }
+
+    .act-number {
+      font-family: 'Special Elite', cursive;
+      color: var(--gold); font-size: 0.85rem;
+      letter-spacing: 0.5rem; text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .act-title-big {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700; font-style: italic;
+      color: var(--gold-light);
+      text-shadow: 0 0 30px rgba(201,162,39,0.3);
+      margin-bottom: 1rem;
+    }
+
+    .btn-continue {
+      margin-top: 2rem;
+      padding: 0.8rem 2rem;
+      background: transparent;
+      border: 2px solid var(--gold);
+      border-radius: 4px;
+      color: var(--gold); font-family: 'Special Elite', cursive;
+      font-size: 0.95rem; letter-spacing: 0.2rem;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .btn-continue:hover { background: var(--gold); color: var(--sepia-dark); }
+
+    /* ══════════════════════════════
+       DIALOGUE SCENE
+    ══════════════════════════════ */
+    #dialogue-screen {
+      position: relative; width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+    }
+
+    .scene-bg {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      filter: sepia(0.85) brightness(0.45);
+      transition: opacity 0.6s;
+    }
+
+    .act-badge {
+      position: absolute; top: 1.2rem; left: 1.4rem;
+      font-family: 'Special Elite', cursive;
+      color: var(--gold); font-size: 0.75rem;
+      letter-spacing: 0.25rem; text-transform: uppercase;
+      z-index: 10; text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    }
+
+    .star-counter {
+      position: absolute; top: 1.2rem; right: 1.4rem;
+      font-family: 'Special Elite', cursive;
+      color: var(--gold); font-size: 0.9rem;
+      z-index: 10; letter-spacing: 0.1rem;
+    }
+
+    /* Character portrait */
+    .character-wrap {
+      position: absolute; bottom: 220px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center;
+      z-index: 5;
+      transition: opacity 0.4s;
+    }
+
+    .character-portrait {
+      width: 200px; height: 200px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.5rem;
+      border: 3px solid var(--gold);
+      box-shadow: 0 0 30px rgba(201,162,39,0.3), 0 8px 32px rgba(0,0,0,0.6);
+      background: var(--sepia-mid);
+      filter: sepia(0.4);
+      margin-bottom: 0.5rem;
+    }
+
+    .character-name-tag {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.78rem; letter-spacing: 0.2rem;
+      color: var(--gold); text-transform: uppercase;
+      background: rgba(15,9,0,0.75);
+      padding: 0.25rem 0.8rem; border: 1px solid var(--gold);
+      border-radius: 2px;
+    }
+
+    /* Dialogue box */
+    .dialogue-box {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      min-height: 210px;
+      background: linear-gradient(to top, rgba(10,6,0,0.98) 60%, rgba(10,6,0,0.85));
+      border-top: 2px solid var(--gold);
+      padding: 1.4rem 2rem 1.4rem;
+      z-index: 10;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+
+    .dialogue-text {
+      font-family: 'Lora', serif;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      line-height: 1.7;
+      color: var(--cream);
+      min-height: 80px;
+      flex: 1;
+    }
+
+    .dialogue-text em {
+      font-style: italic; color: var(--gold-light);
+    }
+
+    .tap-hint {
+      font-family: 'Special Elite', cursive;
+      color: var(--gold); font-size: 0.75rem;
+      letter-spacing: 0.2rem; text-align: right;
+      margin-top: 0.6rem; cursor: pointer;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* ══════════════════════════════
+       CHOICE SCREEN
+    ══════════════════════════════ */
+    .choice-box {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(10,6,0,0.98) 60%, rgba(10,6,0,0.85));
+      border-top: 2px solid var(--gold);
+      padding: 1.4rem 2rem;
+      z-index: 10;
+    }
+
+    .choice-question {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1rem, 2.5vw, 1.15rem);
+      font-style: italic; color: var(--gold-light);
+      margin-bottom: 1rem; line-height: 1.5;
+    }
+
+    .choice-options {
+      display: flex; flex-direction: column; gap: 0.7rem;
+    }
+
+    .btn-choice {
+      padding: 0.9rem 1.4rem;
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid var(--brown-mid);
+      border-radius: 4px;
+      color: var(--cream); font-family: 'Lora', serif;
+      font-size: clamp(0.9rem, 2vw, 1.05rem);
+      text-align: left; cursor: pointer;
+      transition: all 0.25s;
+      line-height: 1.4;
+    }
+    .btn-choice:hover {
+      border-color: var(--gold); color: var(--gold-light);
+      background: rgba(201,162,39,0.08);
+      transform: translateX(4px);
+    }
+
+    /* ── Feedback overlay ── */
+    .feedback-overlay {
+      position: fixed; inset: 0; z-index: 900;
+      background: rgba(0,0,0,0.82);
+      display: flex; align-items: center; justify-content: center;
+      padding: 2rem;
+    }
+
+    .feedback-card {
+      max-width: 520px; width: 100%;
+      background: var(--sepia-mid);
+      border: 2px solid var(--gold);
+      border-radius: 6px; padding: 2rem;
+      text-align: center;
+    }
+
+    .feedback-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+    .feedback-result {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--gold-light); margin-bottom: 0.8rem;
+    }
+    .feedback-text {
+      font-family: 'Lora', serif;
+      color: var(--cream); font-size: 1rem;
+      line-height: 1.7; font-style: italic;
+      margin-bottom: 1.5rem;
+    }
+    .btn-feedback {
+      padding: 0.8rem 2rem;
+      background: var(--gold); color: var(--sepia-dark);
+      border: none; border-radius: 4px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: transform 0.2s;
+    }
+    .btn-feedback:hover { transform: scale(1.03); }
+
+    /* ══════════════════════════════
+       MINI-GAME — CANTINFLAS
+    ══════════════════════════════ */
+    #minigame-screen {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      padding: 2rem 1.5rem; overflow-y: auto;
+      background: radial-gradient(ellipse at center, #1e1000 0%, #0a0500 100%);
+    }
+
+    .mg-title {
+      font-family: 'Playfair Display', serif;
+      font-style: italic; font-size: 1.3rem;
+      color: var(--gold-light); text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .mg-instruction {
+      font-family: 'Special Elite', cursive;
+      color: var(--cream-dim); font-size: 0.85rem;
+      letter-spacing: 0.1rem; text-align: center;
+      margin-bottom: 1.4rem;
+    }
+
+    /* ── DnD Layout ── */
+    #minigame-screen {
+      display: flex; flex-direction: column;
+      width: 100%; height: 100%;
+      padding: 0.5rem 1rem 0.8rem;
+      overflow: hidden;
+      background: radial-gradient(ellipse at center, #1e1000 0%, #0a0500 100%);
+    }
+
+    .dnd-section-label {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.65rem; letter-spacing: 0.2rem;
+      color: var(--gold); text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    /* Cards tray — horizontal scroll strip */
+    .dnd-cards-area {
+      display: flex; flex-direction: row; gap: 6px;
+      overflow-x: auto; overflow-y: hidden;
+      width: 100%; padding: 4px 2px 8px;
+      flex-shrink: 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--brown-mid) transparent;
+    }
+    .dnd-cards-area::-webkit-scrollbar { height: 4px; }
+    .dnd-cards-area::-webkit-scrollbar-thumb { background: var(--brown-mid); border-radius: 2px; }
+
+    .dnd-card {
+      flex-shrink: 0;
+      width: 140px; padding: 10px 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid var(--brown-mid);
+      border-radius: 8px; color: var(--cream);
+      font-family: 'Lora', serif; font-size: 0.82rem;
+      cursor: grab; user-select: none;
+      transition: all 0.2s; text-align: center;
+      line-height: 1.35; white-space: normal;
+    }
+    .dnd-card:hover { border-color: var(--gold); background: rgba(201,162,39,0.1); }
+    .dnd-card.selected {
+      border-color: var(--gold-light); background: rgba(201,162,39,0.22);
+      box-shadow: 0 0 12px rgba(201,162,39,0.5);
+      color: var(--gold-light);
+    }
+    .dnd-card.placed-out {
+      opacity: 0.2; pointer-events: none;
+      border-style: dashed; color: transparent;
+    }
+
+    /* Divider */
+    .dnd-divider {
+      width: 100%; height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      margin: 6px 0; flex-shrink: 0;
+    }
+
+    /* Slots list */
+    .dnd-slots-area {
+      display: flex; flex-direction: column; gap: 5px;
+      width: 100%; flex: 1; overflow-y: auto;
+      padding-right: 2px;
+    }
+    .dnd-slot {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px; flex-shrink: 0;
+      background: rgba(0,0,0,0.35);
+      border: 2px dashed rgba(107,76,42,0.7);
+      border-radius: 8px; cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .dnd-slot.over   { border-color: var(--gold-light); background: rgba(201,162,39,0.12); border-style: solid; }
+    .dnd-slot.filled { border-style: solid; border-color: var(--gold); background: rgba(201,162,39,0.06); }
+    .dnd-slot.correct-slot { border-color: #4caf50 !important; background: rgba(76,175,80,0.1) !important; }
+    .dnd-slot.wrong-slot   { border-color: #e53935 !important; background: rgba(229,57,53,0.1) !important; }
+
+    .dnd-slot-num {
+      min-width: 26px; height: 26px;
+      background: var(--brown-mid); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Special Elite', cursive; font-size: 0.85rem;
+      color: var(--gold); flex-shrink: 0;
+    }
+    .dnd-slot-text {
+      font-family: 'Lora', serif; font-size: 0.88rem;
+      color: var(--cream); line-height: 1.3;
+    }
+    .dnd-slot-placeholder {
+      font-family: 'Special Elite', cursive; font-size: 0.7rem;
+      color: rgba(107,76,42,0.9); letter-spacing: 0.04rem;
+    }
+
+    .btn-check {
+      padding: 0.85rem 2.2rem;
+      background: linear-gradient(135deg, var(--gold) 0%, #a07c1a 100%);
+      border: none; border-radius: 4px;
+      color: var(--sepia-dark); font-family: 'Playfair Display', serif;
+      font-size: 1.05rem; font-weight: 700;
+      cursor: pointer; transition: transform 0.2s;
+    }
+    .btn-check:hover { transform: scale(1.03); }
+
+    /* ══════════════════════════════
+       ENDING / MOVIE POSTER
+    ══════════════════════════════ */
+    #ending-screen {
+      width: 100%; height: 100%; overflow-y: auto;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      padding: 2rem 1.5rem;
+      background: radial-gradient(ellipse at center, #1e1000 0%, #0a0500 100%);
+    }
+
+    .poster-wrap {
+      width: 100%; max-width: 480px;
+      background: var(--sepia-mid);
+      border: 3px solid var(--gold);
+      border-radius: 6px; padding: 2.5rem 2rem;
+      text-align: center; position: relative;
+      box-shadow: 0 0 60px rgba(201,162,39,0.2), 0 20px 60px rgba(0,0,0,0.7);
+    }
+
+    .poster-corner {
+      position: absolute; width: 20px; height: 20px;
+      border-color: var(--gold); border-style: solid;
+    }
+    .poster-corner.tl { top: 8px; left: 8px;  border-width: 2px 0 0 2px; }
+    .poster-corner.tr { top: 8px; right: 8px; border-width: 2px 2px 0 0; }
+    .poster-corner.bl { bottom: 8px; left: 8px;  border-width: 0 0 2px 2px; }
+    .poster-corner.br { bottom: 8px; right: 8px; border-width: 0 2px 2px 0; }
+
+    .poster-label {
+      font-family: 'Special Elite', cursive;
+      color: var(--gold); font-size: 0.75rem;
+      letter-spacing: 0.4rem; text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .poster-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 700; font-style: italic;
+      color: var(--gold-light);
+      text-shadow: 0 0 20px rgba(201,162,39,0.4);
+      line-height: 1.1; margin-bottom: 0.4rem;
+    }
+
+    .poster-subtitle { font-family: 'Special Elite', cursive; color: var(--cream-dim); font-size: 0.8rem; letter-spacing: 0.2rem; margin-bottom: 1.2rem; }
+
+    .poster-stars { font-size: 2.2rem; margin-bottom: 0.5rem; letter-spacing: 0.3rem; }
+
+    .poster-stars-label {
+      font-family: 'Special Elite', cursive; color: var(--cream-dim);
+      font-size: 0.78rem; letter-spacing: 0.2rem; margin-bottom: 1.5rem;
+    }
+
+    .poster-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem; font-style: italic; font-weight: 700;
+      color: var(--gold); margin-bottom: 0.3rem;
+    }
+
+    .poster-role {
+      font-family: 'Special Elite', cursive;
+      color: var(--cream-dim); font-size: 0.78rem;
+      letter-spacing: 0.25rem; margin-bottom: 1.5rem;
+    }
+
+    .poster-cast {
+      font-family: 'Special Elite', cursive;
+      color: rgba(245,230,200,0.4); font-size: 0.65rem;
+      letter-spacing: 0.2rem; line-height: 1.8;
+      border-top: 1px solid rgba(201,162,39,0.2);
+      padding-top: 1rem; margin-bottom: 1.5rem;
+    }
+
+    .poster-conclusion {
+      font-family: 'Lora', serif; font-style: italic;
+      color: var(--cream); font-size: 0.95rem;
+      line-height: 1.7; margin-bottom: 1.5rem;
+    }
+
+    .btn-share {
+      padding: 0.9rem 2rem; width: 100%;
+      background: linear-gradient(135deg, var(--gold) 0%, #a07c1a 100%);
+      border: none; border-radius: 4px;
+      color: var(--sepia-dark); font-family: 'Playfair Display', serif;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      transition: transform 0.2s; margin-bottom: 0.8rem;
+    }
+    .btn-share:hover { transform: scale(1.02); }
+
+    .btn-replay {
+      padding: 0.8rem 2rem; width: 100%;
+      background: transparent; border: 2px solid var(--gold);
+      border-radius: 4px; color: var(--gold);
+      font-family: 'Special Elite', cursive; font-size: 0.9rem;
+      letter-spacing: 0.15rem; cursor: pointer; transition: all 0.3s;
+    }
+    .btn-replay:hover { background: var(--gold); color: var(--sepia-dark); }
+
+    /* ── Notification toast ── */
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      background: var(--gold); color: var(--sepia-dark);
+      font-family: 'Special Elite', cursive; font-size: 0.85rem;
+      padding: 0.7rem 1.5rem; border-radius: 4px; z-index: 9999;
+      animation: toastIn 0.3s ease, toastOut 0.3s ease 2.2s forwards;
+    }
+    @keyframes toastIn  { from{opacity:0;transform:translateX(-50%) translateY(10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+    @keyframes toastOut { to{opacity:0;transform:translateX(-50%) translateY(10px)} }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--sepia-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--brown-mid); border-radius: 3px; }
+
+    /* ══════════════════════════════
+       SAT HUD (fixed overlay)
+    ══════════════════════════════ */
+    #sat-hud {
+      position: fixed; top: 14px; left: 18px; z-index: 1100;
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(10,6,0,0.85);
+      border: 1px solid var(--gold);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-family: 'Special Elite', cursive;
+      font-size: 0.82rem; color: var(--gold-light);
+      box-shadow: 0 0 12px rgba(201,162,39,0.25);
+      pointer-events: none;
+      transition: all 0.3s;
+    }
+    #sat-hud .hud-sats { font-weight: bold; color: var(--gold); }
+    #sat-hud .hud-streak { color: #ff8c00; }
+
+    /* ══════════════════════════════
+       LOGROS / ACHIEVEMENTS
+    ══════════════════════════════ */
+    .achievement-grid {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center; margin: 0.8rem 0;
+    }
+    .achievement-badge {
+      display: flex; flex-direction: column; align-items: center;
+      background: rgba(201,162,39,0.12);
+      border: 1px solid var(--gold);
+      border-radius: 10px; padding: 8px 12px;
+      font-family: 'Special Elite', cursive;
+      font-size: 0.7rem; color: var(--cream-dim);
+      text-align: center; min-width: 70px;
+    }
+    .achievement-badge .badge-icon { font-size: 1.4rem; margin-bottom: 3px; }
+    .achievement-badge.locked { opacity: 0.3; filter: grayscale(1); }
+
+    /* ══════════════════════════════
+       SAT REWARD SECTION (ending)
+    ══════════════════════════════ */
+    .sat-reward-box {
+      background: rgba(201,162,39,0.08);
+      border: 1px solid var(--gold);
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      margin: 0.8rem 0;
+      text-align: center;
+    }
+    .sat-earned-label {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.72rem; letter-spacing: 0.2rem;
+      color: var(--gold); text-transform: uppercase; margin-bottom: 4px;
+    }
+    .sat-earned-amount {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; font-weight: 700;
+      color: var(--gold-light);
+    }
+    .sat-total-label {
+      font-size: 0.78rem; color: var(--cream-dim); margin-top: 4px;
+    }
+    .claim-section { margin-top: 0.8rem; }
+    .ln-input {
+      width: 100%; padding: 10px 14px;
+      background: rgba(0,0,0,0.4); border: 1px solid var(--brown-mid);
+      border-radius: 8px; color: var(--cream);
+      font-family: 'Lora', serif; font-size: 0.9rem;
+      outline: none; margin-bottom: 8px;
+      transition: border-color 0.2s;
+    }
+    .ln-input:focus { border-color: var(--gold); }
+    .ln-input::placeholder { color: var(--brown-mid); }
+    .btn-claim {
+      width: 100%; padding: 11px;
+      background: linear-gradient(135deg, #f7931a, #c9a227);
+      border: none; border-radius: 8px;
+      color: var(--sepia-dark); font-family: 'Special Elite', cursive;
+      font-size: 0.95rem; letter-spacing: 0.1rem;
+      cursor: pointer; font-weight: bold;
+      transition: opacity 0.2s;
+    }
+    .btn-claim:hover { opacity: 0.85; }
+    .btn-claim:disabled { opacity: 0.4; cursor: not-allowed; }
+    .claim-status {
+      font-size: 0.82rem; color: var(--gold);
+      margin-top: 6px; min-height: 20px; text-align: center;
+      font-family: 'Special Elite', cursive;
+    }
+
+    /* ══════════════════════════════
+       BALERO MINI-GAME
+    ══════════════════════════════ */
+    #balero-screen {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      width: 100%; height: 100%;
+      padding: 0.6rem 1.5rem 1rem;
+      overflow: hidden;
+    }
+    .balero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      font-weight: 700; font-style: italic;
+      color: var(--gold-light); text-align: center;
+      margin-bottom: 0.15rem;
+    }
+    .balero-subtitle {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.65rem; letter-spacing: 0.12rem;
+      color: var(--cream-dim); text-align: center;
+      margin-bottom: 0.4rem;
+    }
+    .balero-game-area {
+      display: flex; justify-content: center;
+      margin-bottom: 0.3rem;
+      filter: drop-shadow(0 4px 16px rgba(0,0,0,0.6));
+    }
+    #balero-svg { overflow: visible; }
+    .balero-zone-wrap {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 3px;
+      margin-bottom: 0.5rem;
+    }
+    .balero-zone-bar {
+      width: 160px; height: 12px;
+      background: var(--sepia-warm);
+      border-radius: 6px; overflow: hidden;
+      border: 1px solid var(--brown-mid);
+    }
+    #balero-zone-fill {
+      height: 100%; width: 0%;
+      border-radius: 6px;
+      transition: width 0.04s linear, background 0.08s;
+    }
+    .balero-zone-label {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.62rem; letter-spacing: 0.12rem;
+      color: var(--cream-dim); text-transform: uppercase;
+    }
+    .balero-score {
+      display: flex; gap: 2rem;
+      font-family: 'Special Elite', cursive;
+      font-size: 0.85rem; color: var(--cream-dim);
+      margin-bottom: 0.7rem;
+    }
+    .balero-score strong { color: var(--gold-light); font-size: 1rem; }
+    .btn-balero {
+      padding: 13px 44px;
+      background: linear-gradient(135deg, #f7931a, #c9a227);
+      border: none; border-radius: 10px;
+      color: var(--sepia-dark);
+      font-family: 'Special Elite', cursive;
+      font-size: 1.1rem; letter-spacing: 0.1rem;
+      cursor: pointer; font-weight: bold;
+      box-shadow: 0 4px 16px rgba(201,162,39,0.4);
+      transition: transform 0.1s, opacity 0.2s;
+      margin-bottom: 0.6rem;
+    }
+    .btn-balero:active { transform: scale(0.95); }
+    .btn-balero:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+    .balero-msg {
+      font-family: 'Lora', serif;
+      font-size: 0.86rem; line-height: 1.5;
+      text-align: center; color: var(--cream);
+      min-height: 2.2rem; padding: 0 1rem;
+    }
+
+    /* ══════════════════════════════
+       CAJA FUERTE MINI-GAME
+    ══════════════════════════════ */
+    #cajafuerte-screen {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      width: 100%; height: 100%;
+      padding: 0.6rem 1.5rem 1rem;
+      overflow: hidden;
+    }
+    .cf-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      font-weight: 700; font-style: italic;
+      color: var(--gold-light); text-align: center;
+      margin-bottom: 0.15rem;
+    }
+    .cf-subtitle {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.65rem; letter-spacing: 0.12rem;
+      color: var(--cream-dim); text-align: center;
+      margin-bottom: 0.4rem;
+    }
+    .cf-game-area {
+      display: flex; justify-content: center;
+      margin-bottom: 0.4rem;
+      filter: drop-shadow(0 4px 20px rgba(0,0,0,0.7));
+    }
+    .cf-score {
+      display: flex; gap: 2rem;
+      font-family: 'Special Elite', cursive;
+      font-size: 0.85rem; color: var(--cream-dim);
+      margin-bottom: 0.7rem;
+    }
+    .cf-score strong { color: var(--gold-light); font-size: 1rem; }
+    .btn-cajafuerte {
+      padding: 13px 44px;
+      background: linear-gradient(135deg, #f7931a, #c9a227);
+      border: none; border-radius: 10px;
+      color: var(--sepia-dark);
+      font-family: 'Special Elite', cursive;
+      font-size: 1.1rem; letter-spacing: 0.1rem;
+      cursor: pointer; font-weight: bold;
+      box-shadow: 0 4px 16px rgba(201,162,39,0.4);
+      transition: transform 0.1s, opacity 0.2s;
+      margin-bottom: 0.6rem;
+    }
+    .btn-cajafuerte:active { transform: scale(0.95); }
+    .btn-cajafuerte:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+    .cf-msg {
+      font-family: 'Lora', serif;
+      font-size: 0.86rem; line-height: 1.5;
+      text-align: center; color: var(--cream);
+      min-height: 2.2rem; padding: 0 1rem;
+    }
+
+    /* ══════════════════════════════
+       CATCH GAME — PEDRO INFANTE
+    ══════════════════════════════ */
+    #catch-screen {
+      display: flex; flex-direction: column;
+      align-items: center; width: 100%; height: 100%;
+      padding: 0.5rem 1rem 0.8rem; gap: 6px;
+      background: radial-gradient(ellipse at center, #1e1000 0%, #0a0500 100%);
+    }
+    .catch-title {
+      font-family: 'Playfair Display', serif;
+      font-style: italic; font-size: 1.2rem;
+      color: var(--gold-light); text-align: center;
+    }
+    .catch-subtitle {
+      font-family: 'Special Elite', cursive;
+      color: var(--cream-dim); font-size: 0.65rem;
+      letter-spacing: 0.12rem; text-align: center;
+    }
+    .catch-hud {
+      display: flex; gap: 2rem;
+      font-family: 'Special Elite', cursive;
+      font-size: 0.85rem; color: var(--cream-dim);
+    }
+    .catch-hud strong { color: var(--gold-light); font-size: 1rem; }
+    #cg-area {
+      position: relative;
+      width: 100%; max-width: 360px;
+      flex: 1;
+      background: rgba(0,0,0,0.45);
+      border: 1.5px solid var(--brown-mid);
+      border-radius: 10px;
+      overflow: hidden;
+      touch-action: none;
+    }
+    .cg-item {
+      position: absolute;
+      font-size: 1.6rem;
+      transform: translateX(-50%);
+      pointer-events: none;
+      user-select: none;
+      line-height: 1;
+    }
+    #cg-basket {
+      position: absolute;
+      bottom: 10px;
+      font-size: 2.2rem;
+      transform: translateX(-50%);
+      pointer-events: none;
+      user-select: none;
+      transition: left 0.03s linear;
+    }
+    .catch-msg {
+      font-family: 'Lora', serif; font-style: italic;
+      font-size: 0.88rem; color: var(--cream);
+      text-align: center; min-height: 2.2rem;
+      padding: 0 0.5rem; line-height: 1.4; flex-shrink: 0;
+    }
+
+    /* Sat pop animation */
+    @keyframes satPop {
+      0%   { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-50px) scale(1.4); opacity: 0; }
+    }
+    .sat-pop {
+      position: fixed; z-index: 2000;
+      font-family: 'Special Elite', cursive;
+      color: var(--gold-light); font-size: 1rem; font-weight: bold;
+      pointer-events: none;
+      animation: satPop 1.2s ease-out forwards;
+    }
+
+  </style>
+</head>
+<body>
+<div id="screen"></div>
+<div id="sat-hud" style="display:none;">
+  <span class="hud-sats">⚡ <span id="hud-balance">0</span> sats</span>
+  <span class="hud-streak" id="hud-streak"></span>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   EL TESORO DEL PUEBLO — Motor de Novela Visual
+   Bitcoin Education Game · Época de Oro Edition
+═══════════════════════════════════════════════════ */
+
+// ── GAME STATE ──────────────────────────────────────
+const state = {
+  playerName: '',
+  stars: 0,
+  maxStars: 5,
+  sceneIndex: 0,
+  satsEarnedThisRun: 0
+};
+
+// ── CHARACTER DATA ───────────────────────────────────
+const CHARS = {
+  pedro:     { emoji: '🎸', color: '#c9a227', name: 'Pedro Infante',    bg: '#2a1800', img: 'https://i.imgur.com/xwXl4IY.jpeg' },
+  maria:     { emoji: '💎', color: '#8b1a1a', name: 'María Félix',      bg: '#1a0808', img: 'https://i.imgur.com/sg0SjgW.jpeg' },
+  cantinflas:{ emoji: '🎩', color: '#2d6a4f', name: 'Cantinflas',       bg: '#081a10', img: 'https://i.imgur.com/UGP2vCa.jpeg' },
+  jorge:     { emoji: '🤠', color: '#1b3a6b', name: 'Jorge Negrete',    bg: '#080e1a', img: 'https://i.imgur.com/8tx842i.jpeg' },
+  dolores:   { emoji: '🌹', color: '#6b2d8b', name: 'Dolores del Río',  bg: '#110818', img: 'https://i.imgur.com/HTF3kSq.jpeg' },
+  cacique:   { emoji: '🏦', color: '#4a1c00', name: 'El Cacique',       bg: '#150800', img: 'https://i.imgur.com/NNoMHMa.jpeg' }
+};
+
+// ── SCENE BACKGROUNDS (CSS gradients as fallback) ───
+const BACKGROUNDS = {
+  vecindad: 'linear-gradient(135deg, #2a1500 0%, #0f0a00 50%, #1a0d00 100%)',
+  banco:    'linear-gradient(135deg, #1a1500 0%, #0d0900 50%, #1a1200 100%)',
+  salon:    'linear-gradient(135deg, #1a0a0a 0%, #0d0505 50%, #1a0808 100%)',
+  mercado:  'linear-gradient(135deg, #0a1a10 0%, #050d08 50%, #081a0f 100%)',
+  hacienda: 'linear-gradient(135deg, #0a1020 0%, #050810 50%, #0a1020 100%)',
+  frontera: 'linear-gradient(135deg, #120818 0%, #08040f 50%, #100618 100%)',
+  noche:    'linear-gradient(135deg, #080500 0%, #030200 50%, #0a0700 100%)'
+};
+
+// ── SCENES ────────────────────────────────────────────
+const SCENES = [
+
+  // ACT 1 — Pedro Infante
+  {
+    type: 'act_intro', act: 'ACTO I',
+    title: 'El Pueblo Despierta',
+    character: 'pedro', next: 1
+  },
+  {
+    type: 'dialogue', act: 'ACTO I', bg: 'vecindad', character: 'pedro',
+    text: '¡Órale, compadre! Qué gusto que estés aquí. Soy Pedro Infante, y hoy te voy a contar algo que cambiará para siempre cómo ves tu dinero.'
+  },
+  {
+    type: 'dialogue', act: 'ACTO I', bg: 'vecindad', character: 'pedro',
+    text: '¿Cuánto tiempo llevamos entregando nuestros ahorros al banco para que los "cuide"? Toda la vida. Pero hay algo nuevo que lo cambia todo: se llama <em>Bitcoin</em>.'
+  },
+  {
+    type: 'dialogue', act: 'ACTO I', bg: 'vecindad', character: 'pedro',
+    text: 'Bitcoin es dinero del pueblo. Ningún gobierno lo controla, nadie puede imprimirlo de más, y tú —solo tú— decides qué hacer con él. Es tuyo de verdad.',
+    next: 27
+  },
+  {
+    type: 'choice', act: 'ACTO I', bg: 'vecindad', character: 'pedro',
+    question: '🎬 Don Aurelio del banco te ofrece guardar todos tus ahorros. ¿Qué decides?',
+    options: [
+      {
+        text: '🏦 Se los doy, él sabe más que yo',
+        stars: 0,
+        feedback: {
+          icon: '😔', result: 'Hay una mejor opción...',
+          text: 'Pedro te pone la mano en el hombro: "Compadre, el banco cobra comisiones, puede bloquearte la cuenta y cierra los fines de semana. Con Bitcoin, tú eres tu propio banco. Nadie te pide permiso."'
+        }
+      },
+      {
+        text: '🔐 Los guardo yo mismo con Bitcoin',
+        stars: 1,
+        feedback: {
+          icon: '⚡', result: '¡Ganaste!',
+          text: 'Pedro sonríe: "¡Así se habla! Eso es ser dueño de tu propio dinero. Con Bitcoin, nadie puede tocarlo sin tu permiso. Ni el banco, ni el gobierno, ni nadie."'
+        }
+      }
+    ],
+    next: 27
+  },
+
+  // ACT 2 — El Cacique
+  {
+    type: 'act_intro', act: 'ACTO II',
+    title: 'El Cacique del Peso',
+    character: 'cacique', next: 6
+  },
+  {
+    type: 'dialogue', act: 'ACTO II', bg: 'banco', character: 'cacique',
+    text: 'Bienvenido a mi banco. Aquí guardo tu dinero... por una pequeña comisión. ¿Quieres retirarlo? Necesitas identificación, dos testigos y volver el lunes.'
+  },
+  {
+    type: 'dialogue', act: 'ACTO II', bg: 'banco', character: 'cacique',
+    text: 'Además, el gobierno me dice qué puedo hacer con tu dinero. ¿Transferencia internacional? Cinco días y te cuesta el 8%. ¿No te gusta? No hay más opciones, amigo.'
+  },
+  {
+    type: 'dialogue', act: 'ACTO II', bg: 'banco', character: 'cantinflas',
+    text: '¡Ora ora! Mire usted... hay que buscarle la vuelta a este cacique, ¿no? Porque así como está la cosa, el que pierde siempre es el pueblo. ¡Síganme los buenos!',
+    next: 9
+  },
+  {
+    type: 'balero', act: 'ACTO II', next: 10
+  },
+
+  // ACT 3 — María Félix
+  {
+    type: 'act_intro', act: 'ACTO III',
+    title: 'La Llave de La Doña',
+    character: 'maria', next: 11
+  },
+  {
+    type: 'dialogue', act: 'ACTO III', bg: 'salon', character: 'maria',
+    text: 'En Bitcoin tienes algo que se llama <em>llave privada</em>. Es como la llave de tu caja fuerte personal — la única que abre donde guardas tu dinero.'
+  },
+  {
+    type: 'dialogue', act: 'ACTO III', bg: 'salon', character: 'maria',
+    text: 'Yo jamás le daba mis joyas a nadie para que me las "guardara". El que guarda tus joyas tiene el poder sobre ellas. Lo mismo pasa con tu Bitcoin.'
+  },
+  {
+    type: 'cajafuerte', act: 'ACTO III', next: 14
+  },
+
+  // ACT 4 — Cantinflas (Mini-juego)
+  {
+    type: 'act_intro', act: 'ACTO IV',
+    title: 'El Enredo de Cantinflas',
+    character: 'cantinflas', next: 15
+  },
+  {
+    type: 'dialogue', act: 'ACTO IV', bg: 'mercado', character: 'cantinflas',
+    text: 'Mire usted, esto del blockchain suena muy complicado, pero es como el chisme del vecindario: todo el mundo lo sabe, nadie lo puede negar y nadie lo puede cambiar.'
+  },
+  {
+    type: 'dialogue', act: 'ACTO IV', bg: 'mercado', character: 'cantinflas',
+    text: 'Le voy a explicar cómo funciona una transacción de Bitcoin. Pero —a ver cómo le digo— se me revolvieron los pasos. ¿Me ayuda a ponerlos en orden?'
+  },
+  {
+    type: 'minigame', act: 'ACTO IV', next: 18
+  },
+
+  // ACT 5 — Jorge Negrete
+  {
+    type: 'act_intro', act: 'ACTO V',
+    title: 'El Oro que No se Negocia',
+    character: 'jorge', next: 19
+  },
+  {
+    type: 'dialogue', act: 'ACTO V', bg: 'hacienda', character: 'jorge',
+    text: 'Hay cosas en la vida que no se negocian. El honor. La palabra. Y el límite de Bitcoin: solo existirán <em>21 millones</em> en todo el mundo. Ni uno más, jamás.'
+  },
+  {
+    type: 'dialogue', act: 'ACTO V', bg: 'hacienda', character: 'jorge',
+    text: 'El peso mexicano, en cambio... el gobierno puede imprimir los que quiera. Y cada vez que imprimen más, los que tú ya tienes valen menos. A eso se llama <em>inflación</em>.'
+  },
+  {
+    type: 'choice', act: 'ACTO V', bg: 'hacienda', character: 'jorge',
+    question: '🎬 Tienes $10,000 pesos ahorrados. ¿Qué haces con ellos?',
+    options: [
+      {
+        text: '🏦 Los dejo en mi cuenta bancaria',
+        stars: 0,
+        feedback: {
+          icon: '😔', result: 'Jorge tiene algo que decirte...',
+          text: 'Jorge suspira: "En 5 años, con la inflación, esos $10,000 van a comprar lo que hoy compras con $7,000. El banco no te protege contra eso. Bitcoin sí — porque nadie puede imprimir más."'
+        }
+      },
+      {
+        text: '₿ Los convierto a Bitcoin',
+        stars: 1,
+        feedback: {
+          icon: '⚡', result: '¡Ganaste!',
+          text: 'Jorge asiente con orgullo: "Como el oro, compadre. Nadie puede imprimir más Bitcoin. Solo hay 21 millones, para siempre. Tu poder adquisitivo queda protegido."'
+        }
+      }
+    ],
+    next: 22
+  },
+
+  // ACT 6 — Dolores del Río
+  {
+    type: 'act_intro', act: 'ACTO VI',
+    title: 'Sin Fronteras, Como Dolores',
+    character: 'dolores', next: 23
+  },
+  {
+    type: 'dialogue', act: 'ACTO VI', bg: 'frontera', character: 'dolores',
+    text: 'Cuando llegué a Hollywood, nadie me preguntó en qué banco tenía mis ahorros. El talento no tiene fronteras. Y con Bitcoin, el dinero tampoco las tiene.'
+  },
+  {
+    type: 'dialogue', act: 'ACTO VI', bg: 'frontera', character: 'dolores',
+    text: 'Millones de familias mexicanas esperan días para recibir remesas del extranjero, y pierden hasta el 10% en comisiones. Con Bitcoin, el dinero llega en minutos, directo, sin intermediarios.'
+  },
+  {
+    type: 'choice', act: 'ACTO VI', bg: 'frontera', character: 'dolores',
+    question: '🎬 Tu hijo está en Chicago y necesita dinero urgente. ¿Cómo se lo mandas?',
+    options: [
+      {
+        text: '💸 Por Western Union o el banco',
+        stars: 0,
+        feedback: {
+          icon: '😔', result: 'Dolores te explica...',
+          text: 'Dolores niega suavemente: "Cinco días de espera y pierdes el 8% en comisiones. Tu hijo necesita el dinero hoy, no el jueves. Con Bitcoin llega en minutos, completo, sin que nadie se lleve su parte."'
+        }
+      },
+      {
+        text: '⚡ Con Bitcoin, directo a su wallet',
+        stars: 1,
+        feedback: {
+          icon: '⚡', result: '¡Ganaste!',
+          text: 'Dolores sonríe: "En minutos, sin que nadie se lleve su parte. Sin fronteras, sin intermediarios, sin permisos. Así se manda dinero en el siglo XXI."'
+        }
+      }
+    ],
+    next: 26
+  },
+
+  // ENDING
+  {
+    type: 'ending'
+  },
+
+  // CATCH GAME — ACTO I (index 27, reached from Act I choice → next: 27)
+  {
+    type: 'catchgame', act: 'ACTO I', next: 5
+  }
+];
+
+// ── MINI-GAME DATA ────────────────────────────────────
+const MINIGAME_STEPS = [
+  { id: 1, text: 'Tú creas la transacción en tu wallet' },
+  { id: 2, text: 'La firmas con tu llave privada' },
+  { id: 3, text: 'La transmites a la red Bitcoin' },
+  { id: 4, text: 'Los mineros la verifican' },
+  { id: 5, text: 'Queda confirmada en el blockchain para siempre' }
+];
+
+const CORRECT_ORDER = [1, 2, 3, 4, 5];
+
+let mgShuffled    = [];
+let mgSlots       = {};   // { 1: stepId|null, … 5: stepId|null }
+let mgSelectedCard = null; // stepId of the card held in hand
+
+// ── WALLET (localStorage) ────────────────────────────
+const WALLET_KEY = 'etp_wallet';
+
+function loadWallet() {
+  try {
+    return JSON.parse(localStorage.getItem(WALLET_KEY)) || {
+      satBalance: 0, lastPlayed: null,
+      currentStreak: 0, gamesCompleted: 0, achievements: []
+    };
+  } catch(e) {
+    return { satBalance: 0, lastPlayed: null, currentStreak: 0, gamesCompleted: 0, achievements: [] };
+  }
+}
+
+function saveWallet(w) {
+  try { localStorage.setItem(WALLET_KEY, JSON.stringify(w)); } catch(e) {}
+}
+
+function awardSats(amount, label) {
+  state.satsEarnedThisRun += amount;
+  const w = loadWallet();
+  w.satBalance += amount;
+  saveWallet(w);
+  updateHUD();
+  // Pop animation
+  const pop = document.createElement('div');
+  pop.className = 'sat-pop';
+  pop.textContent = `+${amount} sats ⚡`;
+  pop.style.top  = `${Math.random() * 30 + 40}%`;
+  pop.style.left = `${Math.random() * 50 + 25}%`;
+  document.body.appendChild(pop);
+  setTimeout(() => pop.remove(), 1300);
+}
+
+function deductSats(amount) {
+  const w = loadWallet();
+  const deducted = Math.min(amount, w.satBalance); // no bajar de 0
+  w.satBalance = Math.max(0, w.satBalance - amount);
+  state.satsEarnedThisRun = Math.max(0, state.satsEarnedThisRun - amount);
+  saveWallet(w);
+  updateHUD();
+  if (deducted > 0) {
+    const pop = document.createElement('div');
+    pop.className = 'sat-pop';
+    pop.textContent = `-${deducted} sats 💸`;
+    pop.style.color = '#ff4444';
+    pop.style.top  = `${Math.random() * 30 + 40}%`;
+    pop.style.left = `${Math.random() * 50 + 25}%`;
+    document.body.appendChild(pop);
+    setTimeout(() => pop.remove(), 1300);
+  }
+}
+
+function updateHUD() {
+  const hud = document.getElementById('sat-hud');
+  if (!hud) return;
+  const w = loadWallet();
+  document.getElementById('hud-balance').textContent = w.satBalance;
+  const streakEl = document.getElementById('hud-streak');
+  streakEl.textContent = w.currentStreak > 1 ? `🔥 ${w.currentStreak}d` : '';
+}
+
+function showHUD() {
+  const hud = document.getElementById('sat-hud');
+  if (hud) { updateHUD(); hud.style.display = 'flex'; }
+}
+
+function hideHUD() {
+  const hud = document.getElementById('sat-hud');
+  if (hud) hud.style.display = 'none';
+}
+
+// ── ACHIEVEMENTS ─────────────────────────────────────
+const ACHIEVEMENTS = [
+  { id: 'primer_bloque', icon: '🧱', name: 'Primer Bloque',   desc: 'Completa tu primera partida' },
+  { id: 'maestro',       icon: '⭐', name: 'Maestro Bitcoin', desc: 'Obtén 5 estrellas perfectas' },
+  { id: 'fuego',         icon: '🔥', name: 'Racha de Fuego',  desc: 'Juega 3 días seguidos' },
+  { id: 'hodler',        icon: '💎', name: 'HODLer',          desc: 'Juega 7 días seguidos' },
+  { id: 'lightning',     icon: '⚡', name: 'Rayo Lightning',  desc: 'Gana el mini-juego de Cantinflas' },
+  { id: 'pueblo',        icon: '🎬', name: 'Voz del Pueblo',  desc: 'Completa 5 partidas' },
+];
+
+function unlockAchievement(id) {
+  const w = loadWallet();
+  if (w.achievements.includes(id)) return false;
+  w.achievements.push(id);
+  saveWallet(w);
+  const ach = ACHIEVEMENTS.find(a => a.id === id);
+  if (ach) showToast(`🏆 ¡Logro desbloqueado! ${ach.icon} ${ach.name}`);
+  return true;
+}
+
+// ── RENDER ENGINE ─────────────────────────────────────
+const screen = document.getElementById('screen');
+
+function render() {
+  const scene = SCENES[state.sceneIndex];
+  screen.innerHTML = '';
+
+  if      (scene.type === 'act_intro')  renderActIntro(scene);
+  else if (scene.type === 'dialogue')   renderDialogue(scene);
+  else if (scene.type === 'choice')     renderChoice(scene);
+  else if (scene.type === 'minigame')   renderMinigame(scene);
+  else if (scene.type === 'balero')     renderBalero(scene);
+  else if (scene.type === 'cajafuerte') renderCajaFuerte(scene);
+  else if (scene.type === 'catchgame')  renderCatchGame(scene);
+  else if (scene.type === 'ending')     renderEnding();
+
+  // Animate in
+  screen.firstChild && screen.firstChild.classList && screen.firstChild.classList.add('fade-in');
+}
+
+function goTo(index) {
+  state.sceneIndex = index;
+  render();
+}
+
+function next() {
+  goTo(state.sceneIndex + 1);
+}
+
+// ── STAR DISPLAY ──────────────────────────────────────
+function starBar() {
+  const filled  = '★'.repeat(state.stars);
+  const empty   = '☆'.repeat(state.maxStars - state.stars);
+  return filled + empty;
+}
+
+// ── TITLE SCREEN ──────────────────────────────────────
+function renderTitle() {
+  hideHUD();
+  screen.innerHTML = `
+    <div id="title-screen">
+      <div class="film-stars">✦ ✦ ✦ ✦ ✦</div>
+      <div class="title-label">Una Novela Visual Educativa</div>
+      <div class="main-title">El Tesoro<br>del Pueblo</div>
+      <div class="subtitle">Aprende Bitcoin con las estrellas de la Época de Oro</div>
+      <div class="divider"></div>
+      <div class="name-form">
+        <label class="name-label" for="nameInput">¿Cómo te llamas, compadre?</label>
+        <input class="name-input" id="nameInput" type="text" placeholder="Tu nombre..." maxlength="30" autocomplete="off" />
+        <div id="name-warning" style="
+          color:#ff6b6b;font-family:'Special Elite',cursive;
+          font-size:0.78rem;letter-spacing:0.05rem;
+          min-height:1.2rem;margin-top:0.3rem;
+          opacity:0;transition:opacity 0.3s;
+        "></div>
+        <button class="btn-start" onclick="startGame()">🎬 Comenzar la Historia</button>
+      </div>
+      <div class="credits">Organizado por Aureo · Acepta Bitcoin · Hackathon Bitcoin México 2026</div>
+    </div>`;
+
+  setTimeout(() => {
+    const inp = document.getElementById('nameInput');
+    if (inp) {
+      inp.focus();
+      inp.addEventListener('keypress', (e) => { if (e.key === 'Enter') startGame(); });
+    }
+  }, 100);
+}
+
+function startGame() {
+  const inp = document.getElementById('nameInput');
+  const name = inp ? inp.value.trim() : '';
+
+  if (!name) {
+    const warn = document.getElementById('name-warning');
+    if (warn) {
+      warn.style.opacity = '1';
+      warn.textContent = '⚠️ Por favor escribe tu nombre para comenzar';
+      inp.style.borderColor = '#ff4444';
+      setTimeout(() => {
+        warn.style.opacity = '0';
+        inp.style.borderColor = '';
+      }, 2500);
+    }
+    inp && inp.focus();
+    return;
+  }
+
+  state.playerName = name;
+  state.stars = 0;
+  state.sceneIndex = 0;
+  state.satsEarnedThisRun = 0;
+
+  // Daily streak check
+  const w = loadWallet();
+  const today = new Date().toDateString();
+  const lastDay = w.lastPlayed ? new Date(w.lastPlayed).toDateString() : null;
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+  if (lastDay !== today) {
+    if (lastDay === yesterday) {
+      w.currentStreak = (w.currentStreak || 0) + 1;
+      let bonus = 20;
+      if (w.currentStreak >= 7) { bonus = 200; unlockAchievement('hodler'); }
+      else if (w.currentStreak >= 3) { bonus = 50; unlockAchievement('fuego'); }
+      w.satBalance += bonus;
+      state.satsEarnedThisRun += bonus;
+      setTimeout(() => showToast(`🔥 ¡Racha de ${w.currentStreak} días! +${bonus} sats`), 600);
+    } else if (lastDay !== null) {
+      w.currentStreak = 1; // streak broken
+    } else {
+      w.currentStreak = 1; // first time
+    }
+    w.lastPlayed = Date.now();
+    saveWallet(w);
+  }
+
+  updateHUD();
+  render();
+}
+
+// ── ACT INTRO ─────────────────────────────────────────
+function renderActIntro(scene) {
+  hideHUD();
+  const ch = CHARS[scene.character];
+  screen.innerHTML = `
+    <div id="act-intro">
+      <div class="act-number">${scene.act}</div>
+      <div class="divider"></div>
+      <div style="font-size:3rem;margin:0.8rem 0;">
+        ${ch.img
+          ? `<img src="${ch.img}" alt="${ch.name}" style="width:160px;height:160px;object-fit:cover;border-radius:50%;border:3px solid #c9a227;filter:sepia(0.3);box-shadow:0 0 20px rgba(201,162,39,0.4);">`
+          : ch.emoji}
+      </div>
+      <div class="act-title-big">${scene.title}</div>
+      <div class="divider"></div>
+      <button class="btn-continue" onclick="goTo(${scene.next})">▶ Continuar</button>
+    </div>`;
+}
+
+// ── DIALOGUE ──────────────────────────────────────────
+function renderDialogue(scene) {
+  showHUD();
+  const ch   = CHARS[scene.character];
+  const bgCSS = BACKGROUNDS[scene.bg] || BACKGROUNDS.vecindad;
+  const nextIdx = (scene.next !== undefined) ? scene.next : (state.sceneIndex + 1);
+
+  screen.innerHTML = `
+    <div id="dialogue-screen">
+      <div class="scene-bg" style="background:${bgCSS};"></div>
+      <div class="act-badge">${scene.act}</div>
+
+
+      <div class="character-wrap">
+        <div class="character-portrait" style="background:${ch.bg};border-color:${ch.color};">
+          ${ch.img ? `<img src="${ch.img}" alt="${ch.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;filter:sepia(0.3);">` : ch.emoji}
+        </div>
+        <div class="character-name-tag" style="color:${ch.color};border-color:${ch.color};">
+          ${ch.name}
+        </div>
+      </div>
+
+      <div class="dialogue-box" onclick="goTo(${nextIdx})" style="cursor:pointer;">
+        <div class="dialogue-text">${scene.text}</div>
+        <div class="tap-hint">Toca para continuar ▶</div>
+      </div>
+    </div>`;
+}
+
+// ── CHOICE ────────────────────────────────────────────
+function renderChoice(scene) {
+  showHUD();
+  const ch   = CHARS[scene.character];
+  const bgCSS = BACKGROUNDS[scene.bg] || BACKGROUNDS.vecindad;
+
+  const optionsHTML = scene.options.map((opt, i) => `
+    <button class="btn-choice" onclick="handleChoice(${i})">${opt.text}</button>
+  `).join('');
+
+  screen.innerHTML = `
+    <div id="dialogue-screen">
+      <div class="scene-bg" style="background:${bgCSS};"></div>
+      <div class="act-badge">${scene.act}</div>
+
+
+      <div class="character-wrap">
+        <div class="character-portrait" style="background:${ch.bg};border-color:${ch.color};">
+          ${ch.img ? `<img src="${ch.img}" alt="${ch.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;filter:sepia(0.3);">` : ch.emoji}
+        </div>
+        <div class="character-name-tag" style="color:${ch.color};border-color:${ch.color};">
+          ${ch.name}
+        </div>
+      </div>
+
+      <div class="choice-box">
+        <div class="choice-question">${scene.question}</div>
+        <div class="choice-options">${optionsHTML}</div>
+      </div>
+    </div>`;
+
+  // Store scene ref globally for handleChoice
+  window._currentChoiceScene = scene;
+}
+
+function handleChoice(index) {
+  const scene  = window._currentChoiceScene;
+  const opt    = scene.options[index];
+  const fb     = opt.feedback;
+  const earned = opt.stars > 0;
+
+  if (earned) {
+    awardSats(10, '¡Respuesta correcta!');
+  } else {
+    deductSats(15);
+  }
+
+  // Siempre avanza al siguiente acto, acertando o no
+  const nextTarget  = scene.next;
+  const btnLabel    = earned ? 'Continuar →' : 'Entendido, continuar →';
+
+  // Show feedback overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'feedback-overlay fade-in';
+  overlay.id = 'active-feedback';
+  overlay.innerHTML = `
+    <div class="feedback-card">
+      <div class="feedback-icon">${fb.icon}</div>
+      <div class="feedback-result">${fb.result}</div>
+      <div class="feedback-text">${fb.text}</div>
+      <button class="btn-feedback" onclick="closeFeedback(${nextTarget})">${btnLabel}</button>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+function closeFeedback(nextIdx) {
+  const overlay = document.getElementById('active-feedback');
+  if (overlay) overlay.remove();
+  goTo(nextIdx);
+}
+
+// ── MINI-GAME ─────────────────────────────────────────
+function renderMinigame(scene) {
+  showHUD();
+  mgShuffled     = [...MINIGAME_STEPS].sort(() => Math.random() - 0.5);
+  mgSlots        = { 1: null, 2: null, 3: null, 4: null, 5: null };
+  mgSelectedCard = null;
+  window._mgNext = scene.next;
+
+  const ch = CHARS['cantinflas'];
+
+  screen.innerHTML = `
+    <div id="minigame-screen">
+
+      <div style="text-align:center;flex-shrink:0;margin-bottom:4px;">
+        <div class="act-badge" style="position:static;display:inline-block;margin-bottom:2px;">${scene.act}</div>
+        <div class="mg-title" style="font-size:1.1rem;margin-bottom:1px;">⚡ El Enredo de Cantinflas</div>
+        <div style="font-size:1.6rem;line-height:1;">${ch.emoji}</div>
+      </div>
+
+      <div class="dnd-section-label" style="margin-top:6px;">Frases disponibles — toca o arrastra</div>
+      <div class="dnd-cards-area" id="dnd-cards-area">
+        ${mgShuffled.map(s => `
+          <div class="dnd-card" id="dnd-card-${s.id}" draggable="true"
+               onclick="mgClickCard(${s.id})"
+               ondragstart="mgDragStart(event,${s.id})"
+               ondragend="mgDragEnd(event,${s.id})">
+            ${s.text}
+          </div>`).join('')}
+      </div>
+
+      <div class="dnd-divider"></div>
+      <div class="dnd-section-label">Coloca en el orden correcto</div>
+
+      <div class="dnd-slots-area">
+        ${[1,2,3,4,5].map(n => `
+          <div class="dnd-slot" id="dnd-slot-${n}"
+               onclick="mgClickSlot(${n})"
+               ondragover="mgDragOver(event,${n})"
+               ondragleave="mgDragLeave(event,${n})"
+               ondrop="mgDrop(event,${n})">
+            <div class="dnd-slot-num">${n}</div>
+            <div id="dnd-slot-label-${n}"><span class="dnd-slot-placeholder">Vacío — toca para colocar</span></div>
+          </div>`).join('')}
+      </div>
+
+      <button class="btn-check" id="btn-check"
+              onclick="checkMinigame(window._mgNext)"
+              style="opacity:0.4;pointer-events:none;flex-shrink:0;margin-top:6px;">
+        ✓ Verificar Orden
+      </button>
+
+    </div>`;
+}
+
+// ── DnD helpers ───────────────────────────────────────
+function mgGetCardSlot(stepId) {
+  for (let i = 1; i <= 5; i++) if (mgSlots[i] === stepId) return i;
+  return null;
+}
+
+function mgRefreshUI() {
+  // Source cards — hide placed ones so remaining cards shift left naturally
+  mgShuffled.forEach(s => {
+    const card = document.getElementById(`dnd-card-${s.id}`);
+    if (!card) return;
+    const inSlot = mgGetCardSlot(s.id) !== null;
+    card.style.display = inSlot ? 'none' : '';
+    card.className = 'dnd-card';
+    if (mgSelectedCard === s.id) card.classList.add('selected');
+  });
+  // Slots
+  for (let i = 1; i <= 5; i++) {
+    const slot  = document.getElementById(`dnd-slot-${i}`);
+    const label = document.getElementById(`dnd-slot-label-${i}`);
+    if (!slot || !label) continue;
+    const stepId = mgSlots[i];
+    slot.className = 'dnd-slot' + (stepId !== null ? ' filled' : '');
+    if (stepId !== null) {
+      const step = MINIGAME_STEPS.find(s => s.id === stepId);
+      label.innerHTML = `<span class="dnd-slot-text">${step ? step.text : ''}</span>`;
+    } else {
+      label.innerHTML = `<span class="dnd-slot-placeholder">Arrastra aquí…</span>`;
+    }
+  }
+  // Scroll cards tray back to start so remaining cards are always visible
+  const tray = document.getElementById('dnd-cards-area');
+  if (tray) tray.scrollLeft = 0;
+
+  // Verify button
+  const allFilled = Object.values(mgSlots).every(v => v !== null);
+  const btn = document.getElementById('btn-check');
+  if (btn) { btn.style.opacity = allFilled ? '1' : '0.4'; btn.style.pointerEvents = allFilled ? 'auto' : 'none'; }
+}
+
+function mgClickCard(stepId) {
+  const slotNum = mgGetCardSlot(stepId);
+  if (slotNum !== null) {
+    // Pick up from slot
+    mgSlots[slotNum] = null;
+    mgSelectedCard = stepId;
+  } else {
+    mgSelectedCard = (mgSelectedCard === stepId) ? null : stepId;
+  }
+  mgRefreshUI();
+}
+
+function mgClickSlot(slotNum) {
+  if (mgSelectedCard === null) {
+    // Pick up card from slot if occupied
+    if (mgSlots[slotNum] !== null) { mgSelectedCard = mgSlots[slotNum]; mgSlots[slotNum] = null; }
+  } else {
+    const displaced = mgSlots[slotNum];
+    mgSlots[slotNum] = mgSelectedCard;
+    mgSelectedCard = displaced;
+  }
+  mgRefreshUI();
+}
+
+function mgDragStart(event, stepId) {
+  const slotNum = mgGetCardSlot(stepId);
+  if (slotNum !== null) mgSlots[slotNum] = null;
+  mgSelectedCard = stepId;
+  event.dataTransfer.setData('text/plain', stepId);
+  event.dataTransfer.effectAllowed = 'move';
+  setTimeout(mgRefreshUI, 0);
+}
+
+function mgDragEnd(event, stepId) {
+  document.querySelectorAll('.dnd-slot').forEach(s => s.classList.remove('over'));
+  mgRefreshUI();
+}
+
+function mgDragOver(event, slotNum) {
+  event.preventDefault();
+  event.dataTransfer.dropEffect = 'move';
+  const slot = document.getElementById(`dnd-slot-${slotNum}`);
+  if (slot) slot.classList.add('over');
+}
+
+function mgDragLeave(event, slotNum) {
+  const slot = document.getElementById(`dnd-slot-${slotNum}`);
+  if (slot) slot.classList.remove('over');
+}
+
+function mgDrop(event, slotNum) {
+  event.preventDefault();
+  const slot = document.getElementById(`dnd-slot-${slotNum}`);
+  if (slot) slot.classList.remove('over');
+  if (mgSelectedCard === null) return;
+  const displaced = mgSlots[slotNum];
+  mgSlots[slotNum] = mgSelectedCard;
+  mgSelectedCard = displaced;
+  mgRefreshUI();
+}
+
+function checkMinigame(nextIdx) {
+  const correct = [1,2,3,4,5].every(i => mgSlots[i] === CORRECT_ORDER[i - 1]);
+
+  // Visual feedback on slots
+  for (let i = 1; i <= 5; i++) {
+    const slot = document.getElementById(`dnd-slot-${i}`);
+    if (slot) slot.classList.add(mgSlots[i] === CORRECT_ORDER[i - 1] ? 'correct-slot' : 'wrong-slot');
+  }
+
+  if (correct) {
+    awardSats(15, 'Mini-juego completado');
+    unlockAchievement('lightning');
+    showToast('⚡ ¡Correcto! +15 sats ganados');
+  } else {
+    deductSats(15);
+    showToast('💡 No era ese orden. -15 sats 💸');
+  }
+
+  setTimeout(() => goTo(nextIdx), 2200);
+}
+
+// ── BALERO MINI-GAME ─────────────────────────────────
+let bState = {
+  phase: 0, speed: 0.033,
+  attempts: 0, catches: 0,
+  animId: null, nextScene: null, locked: false
+};
+
+function renderBalero(scene) {
+  showHUD();
+  if (bState.animId) cancelAnimationFrame(bState.animId);
+  bState = { phase: 0, speed: 0.032, attempts: 0, catches: 0, animId: null, nextScene: scene.next, locked: false };
+
+  screen.innerHTML = `
+    <div id="balero-screen">
+      <div class="act-badge" style="position:static;margin-bottom:0.3rem;">ACTO II</div>
+      <div class="balero-title">🪀 ¡Atrápalo, Compadre!</div>
+      <div class="balero-subtitle">TOCA CUANDO LA BOLA LLEGUE A LA COPA</div>
+
+      <div class="balero-game-area">
+        <svg id="balero-svg" viewBox="0 0 220 260" width="210" height="250">
+
+          <!-- ── MANO / HAND ── -->
+          <!-- Palma -->
+          <rect x="82" y="195" width="56" height="52" rx="14" fill="#d4aa70" stroke="#3a1a00" stroke-width="2.5"/>
+          <!-- Dedo índice -->
+          <rect x="86" y="175" width="12" height="28" rx="6" fill="#d4aa70" stroke="#3a1a00" stroke-width="2"/>
+          <!-- Dedo medio -->
+          <rect x="100" y="170" width="12" height="30" rx="6" fill="#d4aa70" stroke="#3a1a00" stroke-width="2"/>
+          <!-- Dedo anular -->
+          <rect x="114" y="173" width="12" height="28" rx="6" fill="#d4aa70" stroke="#3a1a00" stroke-width="2"/>
+          <!-- Dedo meñique -->
+          <rect x="127" y="180" width="10" height="22" rx="5" fill="#d4aa70" stroke="#3a1a00" stroke-width="2"/>
+          <!-- Pulgar -->
+          <ellipse cx="79" cy="212" rx="10" ry="17" fill="#d4aa70" stroke="#3a1a00" stroke-width="2" transform="rotate(20 79 212)"/>
+          <!-- Nudillos -->
+          <path d="M89 191 Q93 187 98 191" stroke="#3a1a00" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M103 188 Q107 184 112 188" stroke="#3a1a00" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M117 190 Q121 186 126 190" stroke="#3a1a00" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <!-- Sombra mano -->
+          <rect x="82" y="238" width="56" height="6" rx="3" fill="rgba(0,0,0,0.15)"/>
+
+          <!-- ── PALITO / STICK ── -->
+          <rect x="106" y="82" width="10" height="118" rx="4"
+                fill="url(#woodGrad)" stroke="#3a1a00" stroke-width="2"/>
+          <!-- Veta madera -->
+          <line x1="109" y1="90" x2="109" y2="195" stroke="#7a4a00" stroke-width="1" stroke-dasharray="6,8" stroke-linecap="round"/>
+
+          <!-- ── COPA / CUP ── -->
+          <!-- Cuerpo copa -->
+          <path d="M96,100 Q111,115 126,100 L122,72 Q111,80 100,72 Z"
+                fill="#c9a227" stroke="#3a1a00" stroke-width="2.5"/>
+          <!-- Borde superior copa -->
+          <ellipse cx="111" cy="71" rx="13" ry="5" fill="#f0d080" stroke="#3a1a00" stroke-width="2"/>
+          <!-- Brillo copa -->
+          <path d="M100 85 Q104 82 107 88" stroke="rgba(255,255,255,0.4)" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+          <!-- ── GRADIENTE MADERA ── -->
+          <defs>
+            <radialGradient id="ballGrad" cx="35%" cy="30%" r="65%">
+              <stop offset="0%" stop-color="#ffb347"/>
+              <stop offset="50%" stop-color="#e07b00"/>
+              <stop offset="100%" stop-color="#7a3a00"/>
+            </radialGradient>
+            <linearGradient id="woodGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#a06020"/>
+              <stop offset="40%" stop-color="#c9a227"/>
+              <stop offset="100%" stop-color="#8b5e00"/>
+            </linearGradient>
+          </defs>
+
+          <!-- ── CUERDA + BOLA (animadas) ── -->
+          <g id="rope-ball-group">
+            <!-- Cuerda -->
+            <line id="balero-rope-line"
+                  x1="111" y1="71" x2="111" y2="148"
+                  stroke="#d4c090" stroke-width="3"
+                  stroke-linecap="round"/>
+            <!-- Bola -->
+            <circle id="balero-ball-svg"
+                    cx="111" cy="160" r="16"
+                    fill="url(#ballGrad)" stroke="#3a1a00" stroke-width="2.5"/>
+            <!-- Brillo bola -->
+            <circle cx="105" cy="154" r="5"
+                    fill="rgba(255,255,255,0.25)"/>
+            <!-- Sombra bola -->
+            <ellipse cx="111" cy="178" rx="12" ry="4"
+                     fill="rgba(0,0,0,0.2)"/>
+          </g>
+
+        </svg>
+      </div>
+
+      <div class="balero-zone-wrap">
+        <div class="balero-zone-bar"><div id="balero-zone-fill"></div></div>
+        <div class="balero-zone-label">⬆ zona de atrape</div>
+      </div>
+
+      <div class="balero-score">
+        <span>Intentos: <strong id="b-att">0</strong>/3</span>
+        <span>⚡ Atrapadas: <strong id="b-cat">0</strong>/2</span>
+      </div>
+
+      <button class="btn-balero" id="balero-btn" onclick="baleroCatch()">
+        🪀 ¡Atrápalo!
+      </button>
+      <div class="balero-msg" id="balero-msg">
+        Cantinflas te observa… ¡demuéstrale que puedes!
+      </div>
+    </div>`;
+
+  bState.animId = requestAnimationFrame(baleroLoop);
+}
+
+function baleroLoop() {
+  bState.phase += bState.speed;
+  const angle = Math.sin(bState.phase) * 55; // ±55°
+
+  const group = document.getElementById('rope-ball-group');
+  if (!group) { cancelAnimationFrame(bState.animId); return; }
+
+  // Rotar alrededor del centro de la copa (111, 71)
+  group.setAttribute('transform', `rotate(${angle}, 111, 71)`);
+
+  // Barra de zona: 100% cuando angle≈0 (bola justo debajo de la copa)
+  const closeness = 1 - Math.abs(angle) / 55;
+  const fill = document.getElementById('balero-zone-fill');
+  if (fill) {
+    fill.style.width = (closeness * 100) + '%';
+    fill.style.background = closeness > 0.78
+      ? '#00c851' : closeness > 0.5
+      ? '#ffbb33' : '#c9a227';
+  }
+
+  bState.animId = requestAnimationFrame(baleroLoop);
+}
+
+function baleroCatch() {
+  if (bState.locked) return;
+  bState.locked = true;
+
+  const group = document.getElementById('rope-ball-group');
+  const ball  = document.getElementById('balero-ball-svg');
+  const btn   = document.getElementById('balero-btn');
+  const msg   = document.getElementById('balero-msg');
+  if (btn) btn.disabled = true;
+
+  // Leer ángulo actual del SVG group
+  const tfm   = group ? (group.getAttribute('transform') || 'rotate(55,111,71)') : 'rotate(55,111,71)';
+  const match = tfm.match(/rotate\(([-\d.]+)/);
+  const angle = match ? parseFloat(match[1]) : 55;
+  const caught = Math.abs(angle) < 14; // ventana de ±14°
+
+  bState.attempts++;
+  if (caught) {
+    bState.catches++;
+    // Animación bola capturada → se pone dorada
+    if (ball) { ball.setAttribute('fill', '#f0d080'); ball.setAttribute('stroke', '#c9a227'); }
+    if (msg) { msg.textContent = '🎉 ¡Atrapada! Como el minero que atrapa el bloque.'; msg.style.color = '#00c851'; }
+  } else {
+    // Bola se pone roja
+    if (ball) { ball.setAttribute('fill', '#ff4444'); ball.setAttribute('stroke', '#aa0000'); }
+    if (msg) { msg.textContent = '💨 ¡Se escapó! "¡Hay que agarrarle el ritmo, compadre!" — Cantinflas'; msg.style.color = '#ff6b6b'; }
+  }
+
+  document.getElementById('b-att').textContent = bState.attempts;
+  document.getElementById('b-cat').textContent = bState.catches;
+
+  setTimeout(() => {
+    // Restaurar color bola
+    if (ball) { ball.setAttribute('fill', 'url(#ballGrad)'); ball.setAttribute('stroke', '#3a1a00'); }
+
+    if (bState.attempts >= 3) {
+      cancelAnimationFrame(bState.animId);
+      const won = bState.catches >= 2;
+      if (won) {
+        awardSats(15, 'Balero ganado');
+        unlockAchievement('lightning');
+        if (msg) { msg.textContent = '⚡ ¡Maestro del Balero! +15 sats — ¡Cantinflas aplaude de pie!'; msg.style.color = 'var(--gold)'; }
+      } else {
+        deductSats(15);
+        if (msg) { msg.textContent = '💸 -15 sats. "Ni modo, la próxima te sale, compadre." — Cantinflas'; msg.style.color = '#ff6b6b'; }
+      }
+      if (btn) btn.textContent = 'Continuar...';
+      setTimeout(() => goTo(bState.nextScene), 2600);
+    } else {
+      bState.locked = false;
+      if (btn) btn.disabled = false;
+      if (msg) msg.style.color = 'var(--cream)';
+    }
+  }, 950);
+}
+
+// ── CAJA FUERTE MINI-GAME ────────────────────────────
+let cfState = {
+  angle: 0, speed: 1.4,
+  attempts: 0, catches: 0,
+  animId: null, nextScene: null, locked: false
+};
+
+function renderCajaFuerte(scene) {
+  showHUD();
+  if (cfState.animId) cancelAnimationFrame(cfState.animId);
+  cfState = { angle: 0, speed: 2.8, attempts: 0, catches: 0, animId: null, nextScene: scene.next, locked: false };
+
+  // Genera 10 marcas (0–9), el ₿ está en posición 0 (arriba)
+  const tickLines = Array.from({ length: 10 }, (_, i) => {
+    const a  = (i * 36) * Math.PI / 180;
+    const x1 = (110 + 60 * Math.sin(a)).toFixed(1);
+    const y1 = (107 - 60 * Math.cos(a)).toFixed(1);
+    const x2 = (110 + 54 * Math.sin(a)).toFixed(1);
+    const y2 = (107 - 54 * Math.cos(a)).toFixed(1);
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
+              stroke="#c9a227" stroke-width="${i===0?'2.5':'1.5'}" stroke-linecap="round"/>`;
+  }).join('');
+
+  const tickLabels = Array.from({ length: 10 }, (_, i) => {
+    const a  = (i * 36) * Math.PI / 180;
+    const x  = (110 + 46 * Math.sin(a)).toFixed(1);
+    const y  = (107 - 46 * Math.cos(a)).toFixed(1);
+    const label = i === 0 ? '₿' : i;
+    const color = i === 0 ? '#f7931a' : '#c9a227';
+    return `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central"
+              fill="${color}" font-family="Special Elite, cursive"
+              font-size="${i===0?'13':'10'}" font-weight="${i===0?'bold':'normal'}">${label}</text>`;
+  }).join('');
+
+  screen.innerHTML = `
+    <div id="cajafuerte-screen">
+      <div class="act-badge" style="position:static;margin-bottom:0.3rem;">ACTO III</div>
+      <div class="cf-title">🔐 La Caja Fuerte de La Doña</div>
+      <div class="cf-subtitle">DETÉN LA RULETA CUANDO ₿ APUNTE A LA FLECHA</div>
+
+      <div class="cf-game-area">
+        <svg id="cf-svg" viewBox="0 0 220 230" width="210" height="220">
+          <defs>
+            <radialGradient id="safeGrad" cx="40%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#5a5a5a"/>
+              <stop offset="100%" stop-color="#1a1a1a"/>
+            </radialGradient>
+            <radialGradient id="dialGrad" cx="35%" cy="30%" r="65%">
+              <stop offset="0%" stop-color="#4a4a4a"/>
+              <stop offset="100%" stop-color="#1e1e1e"/>
+            </radialGradient>
+            <radialGradient id="knobGrad" cx="35%" cy="30%" r="65%">
+              <stop offset="0%" stop-color="#d4a020"/>
+              <stop offset="100%" stop-color="#8b6010"/>
+            </radialGradient>
+          </defs>
+
+          <!-- Cuerpo de la caja fuerte -->
+          <rect x="20" y="10" width="180" height="195" rx="12"
+                fill="url(#safeGrad)" stroke="#c9a227" stroke-width="3"/>
+          <!-- Detalle borde interior -->
+          <rect x="28" y="18" width="164" height="179" rx="8"
+                fill="none" stroke="#555" stroke-width="1.5"/>
+
+          <!-- Tornillos en esquinas -->
+          <circle cx="38"  cy="28"  r="6" fill="#333" stroke="#c9a227" stroke-width="1.5"/>
+          <circle cx="182" cy="28"  r="6" fill="#333" stroke="#c9a227" stroke-width="1.5"/>
+          <circle cx="38"  cy="187" r="6" fill="#333" stroke="#c9a227" stroke-width="1.5"/>
+          <circle cx="182" cy="187" r="6" fill="#333" stroke="#c9a227" stroke-width="1.5"/>
+          <!-- Cruz tornillo -->
+          <line x1="35" y1="28" x2="41" y2="28" stroke="#c9a227" stroke-width="1"/>
+          <line x1="38" y1="25" x2="38" y2="31" stroke="#c9a227" stroke-width="1"/>
+          <line x1="179" y1="28" x2="185" y2="28" stroke="#c9a227" stroke-width="1"/>
+          <line x1="182" y1="25" x2="182" y2="31" stroke="#c9a227" stroke-width="1"/>
+          <line x1="35" y1="187" x2="41" y2="187" stroke="#c9a227" stroke-width="1"/>
+          <line x1="38" y1="184" x2="38" y2="190" stroke="#c9a227" stroke-width="1"/>
+          <line x1="179" y1="187" x2="185" y2="187" stroke="#c9a227" stroke-width="1"/>
+          <line x1="182" y1="184" x2="182" y2="190" stroke="#c9a227" stroke-width="1"/>
+
+          <!-- Manija lateral -->
+          <rect x="170" y="88" width="14" height="40" rx="7"
+                fill="#c9a227" stroke="#8b6010" stroke-width="2"/>
+          <rect x="172" y="100" width="10" height="16" rx="3"
+                fill="#f0d080" stroke="#8b6010" stroke-width="1"/>
+
+          <!-- Placa de la combinación (fondo del dial) -->
+          <circle cx="110" cy="107" r="70"
+                  fill="#111" stroke="#c9a227" stroke-width="3"/>
+          <circle cx="110" cy="107" r="65"
+                  fill="none" stroke="#555" stroke-width="1"/>
+
+          <!-- DIAL giratorio (todo el grupo rota alrededor de 110,107) -->
+          <g id="cf-dial-group">
+            <!-- Disco del dial -->
+            <circle cx="110" cy="107" r="62" fill="url(#dialGrad)" stroke="#444" stroke-width="1"/>
+            <!-- Marcas cada 36° -->
+            ${tickLines}
+            <!-- Números y ₿ -->
+            ${tickLabels}
+            <!-- Knob central -->
+            <circle cx="110" cy="107" r="14" fill="url(#knobGrad)" stroke="#c9a227" stroke-width="2"/>
+            <circle cx="105" cy="102" r="4" fill="rgba(255,255,255,0.15)"/>
+            <!-- Indicador del knob -->
+            <line x1="110" y1="95" x2="110" y2="100" stroke="#f0d080" stroke-width="2.5" stroke-linecap="round"/>
+          </g>
+
+          <!-- Flecha fija indicadora (apunta hacia arriba del dial) -->
+          <polygon points="110,38  104,52  116,52"
+                   fill="#ff4444" stroke="#aa0000" stroke-width="1.5"/>
+          <rect x="107" y="52" width="6" height="10" rx="2"
+                fill="#ff4444" stroke="#aa0000" stroke-width="1"/>
+
+          <!-- Etiqueta -->
+          <text x="110" y="195" text-anchor="middle"
+                font-family="Special Elite, cursive" font-size="9"
+                fill="#888" letter-spacing="1">BANCO NACIONAL · 1956</text>
+        </svg>
+      </div>
+
+      <div class="cf-score">
+        <span>Intentos: <strong id="cf-att">0</strong>/3</span>
+        <span>⚡ Aciertos: <strong id="cf-cat">0</strong>/2</span>
+      </div>
+
+      <button class="btn-cajafuerte" id="cf-btn" onclick="cajaFuerteCatch()">
+        🔐 ¡Detener!
+      </button>
+      <div class="cf-msg" id="cf-msg">
+        La Doña te observa… ¿sabes dónde está tu llave?
+      </div>
+    </div>`;
+
+  cfState.animId = requestAnimationFrame(cajaFuerteLoop);
+}
+
+function cajaFuerteLoop() {
+  cfState.angle = (cfState.angle + cfState.speed) % 360;
+  const group = document.getElementById('cf-dial-group');
+  if (!group) { cancelAnimationFrame(cfState.animId); return; }
+  group.setAttribute('transform', `rotate(${cfState.angle}, 110, 107)`);
+  cfState.animId = requestAnimationFrame(cajaFuerteLoop);
+}
+
+function cajaFuerteCatch() {
+  if (cfState.locked) return;
+  cfState.locked = true;
+
+  const btn = document.getElementById('cf-btn');
+  const msg = document.getElementById('cf-msg');
+  if (btn) btn.disabled = true;
+
+  // El ₿ empieza en la posición "arriba" (0°).
+  // Cuando cfState.angle ≈ 0 (o 360), el ₿ apunta a la flecha roja.
+  const norm  = cfState.angle % 360;
+  const dist  = Math.min(norm, 360 - norm); // distancia angular al 0
+  const caught = dist < 18; // ventana de ±18°
+
+  const dial = document.getElementById('cf-dial-group');
+  cfState.attempts++;
+
+  if (caught) {
+    cfState.catches++;
+    if (dial) dial.style.filter = 'drop-shadow(0 0 12px #00c851)';
+    if (msg) { msg.textContent = '✅ ¡Abierta! Tu llave privada es solo tuya. Nadie más puede abrirla.'; msg.style.color = '#00c851'; }
+  } else {
+    if (dial) dial.style.filter = 'drop-shadow(0 0 12px #ff4444)';
+    if (msg) { msg.textContent = '❌ ¡Número equivocado! La Doña dice: "Sin tu llave, no es tu Bitcoin."'; msg.style.color = '#ff6b6b'; }
+  }
+
+  document.getElementById('cf-att').textContent = cfState.attempts;
+  document.getElementById('cf-cat').textContent = cfState.catches;
+
+  setTimeout(() => {
+    if (dial) dial.style.filter = '';
+
+    if (cfState.attempts >= 3) {
+      cancelAnimationFrame(cfState.animId);
+      const won = cfState.catches >= 2;
+      if (won) {
+        awardSats(15, 'Caja fuerte abierta');
+        if (msg) { msg.textContent = '⚡ ¡Maestra de la llave privada! +15 sats — La Doña asiente con elegancia.'; msg.style.color = 'var(--gold)'; }
+      } else {
+        deductSats(15);
+        if (msg) { msg.textContent = '💸 -15 sats. "Tu llave, tu Bitcoin. Practica más, mi amor." — La Doña'; msg.style.color = '#ff6b6b'; }
+      }
+      if (btn) btn.textContent = 'Continuar...';
+      setTimeout(() => goTo(cfState.nextScene), 2600);
+    } else {
+      cfState.locked = false;
+      if (btn) btn.disabled = false;
+      if (msg) msg.style.color = 'var(--cream)';
+    }
+  }, 950);
+}
+
+// ── CATCH GAME — PEDRO INFANTE ────────────────────────
+const CG = {
+  items: [], basketPct: 50, caught: 0, hit: 0,
+  spawnCount: 0, spawnTimer: 0, maxSpawn: 15,
+  over: false, animId: null, lastTime: 0, nextScene: null
+};
+
+function renderCatchGame(scene) {
+  showHUD();
+  Object.assign(CG, {
+    items: [], basketPct: 50, caught: 0, hit: 0,
+    spawnCount: 0, spawnTimer: 0, maxSpawn: 15,
+    over: false, animId: null, lastTime: performance.now(),
+    nextScene: scene.next
+  });
+
+  screen.innerHTML = `
+    <div id="catch-screen">
+      <div style="text-align:center;flex-shrink:0;">
+        <div class="act-badge" style="position:static;display:inline-block;margin-bottom:2px;">${scene.act}</div>
+        <div class="catch-title">🎸 ¡Atrapa los Sats, Compadre!</div>
+        <div class="catch-subtitle">MUEVE LA GUITARRA · ATRAPA ⚡ · ESQUIVA 💸</div>
+      </div>
+      <div class="catch-hud">
+        <span>⚡ <strong id="cg-caught">0</strong> atrapados</span>
+        <span>💸 <strong id="cg-hit">0</strong> golpes</span>
+      </div>
+      <div id="cg-area">
+        <div id="cg-basket">🎸</div>
+      </div>
+      <div id="cg-msg" class="catch-msg">¡Pedro lanza sus sats al pueblo!</div>
+    </div>`;
+
+  const area = document.getElementById('cg-area');
+  const basket = document.getElementById('cg-basket');
+  if (basket) basket.style.left = '50%';
+
+  area.addEventListener('mousemove', e => {
+    const r = area.getBoundingClientRect();
+    CG.basketPct = Math.min(92, Math.max(8, ((e.clientX - r.left) / r.width) * 100));
+    const b = document.getElementById('cg-basket');
+    if (b) b.style.left = CG.basketPct + '%';
+  });
+
+  area.addEventListener('touchmove', e => {
+    e.preventDefault();
+    const r = area.getBoundingClientRect();
+    CG.basketPct = Math.min(92, Math.max(8, ((e.touches[0].clientX - r.left) / r.width) * 100));
+    const b = document.getElementById('cg-basket');
+    if (b) b.style.left = CG.basketPct + '%';
+  }, { passive: false });
+
+  CG.animId = requestAnimationFrame(cgLoop);
+}
+
+function cgSpawnItem() {
+  const area = document.getElementById('cg-area');
+  if (!area || CG.spawnCount >= CG.maxSpawn) return;
+  const isSat = Math.random() < 0.65; // 65% sats, 35% pesos
+  const xPct  = 8 + Math.random() * 84;
+  const speed = 95 + Math.random() * 75;
+  const id    = `cgi-${CG.spawnCount}`;
+  const el    = document.createElement('div');
+  el.id = id; el.className = 'cg-item';
+  el.textContent = isSat ? '⚡' : '💸';
+  el.style.left = xPct + '%'; el.style.top = '-32px';
+  area.appendChild(el);
+  CG.items.push({ id, isSat, xPct, y: -32, speed });
+  CG.spawnCount++;
+}
+
+function cgLoop(timestamp) {
+  if (CG.over) return;
+  const dt   = Math.min((timestamp - CG.lastTime) / 1000, 0.05);
+  CG.lastTime = timestamp;
+
+  const area = document.getElementById('cg-area');
+  if (!area) return;
+  const aH = area.offsetHeight, aW = area.offsetWidth;
+  const basketY = aH - 52;
+
+  if (CG.spawnCount < CG.maxSpawn) {
+    CG.spawnTimer += dt;
+    if (CG.spawnTimer >= 0.72) { cgSpawnItem(); CG.spawnTimer = 0; }
+  }
+
+  const done = [];
+  for (const item of CG.items) {
+    item.y += item.speed * dt;
+    const el = document.getElementById(item.id);
+    if (!el) { done.push(item); continue; }
+    el.style.top = item.y + 'px';
+
+    if (item.y >= basketY && item.y < basketY + 48) {
+      const itemX   = (item.xPct / 100) * aW;
+      const basketX = (CG.basketPct / 100) * aW;
+      if (Math.abs(itemX - basketX) < 50) {
+        const b = document.getElementById('cg-basket');
+        if (item.isSat) {
+          CG.caught++;
+          document.getElementById('cg-caught').textContent = CG.caught;
+          if (b) { b.style.filter = 'drop-shadow(0 0 10px #f0d080)'; setTimeout(() => { if(b) b.style.filter=''; }, 200); }
+        } else {
+          CG.hit++;
+          document.getElementById('cg-hit').textContent = CG.hit;
+          if (b) { b.style.filter = 'hue-rotate(180deg) brightness(1.5)'; setTimeout(() => { if(b) b.style.filter=''; }, 300); }
+        }
+        el.remove(); done.push(item); continue;
+      }
+    }
+    if (item.y > aH + 10) { el.remove(); done.push(item); }
+  }
+  CG.items = CG.items.filter(i => !done.includes(i));
+
+  if (CG.spawnCount >= CG.maxSpawn && CG.items.length === 0) { cgEndGame(); return; }
+  CG.animId = requestAnimationFrame(cgLoop);
+}
+
+function cgEndGame() {
+  CG.over = true;
+  if (CG.animId) cancelAnimationFrame(CG.animId);
+  const won = CG.caught >= 7;
+  const msg = document.getElementById('cg-msg');
+  if (won) {
+    awardSats(15, 'Catch game ganado');
+    if (msg) { msg.textContent = `⚡ ¡Atrapaste ${CG.caught} sats! +15 sats — "¡Así cuida su dinero el pueblo!" — Pedro`; msg.style.color = 'var(--gold)'; }
+  } else {
+    deductSats(10);
+    if (msg) { msg.textContent = `💸 Solo ${CG.caught} sats. -10 sats — "¡Hay que practicar más, compadre!" — Pedro`; msg.style.color = '#ff6b6b'; }
+  }
+  setTimeout(() => goTo(CG.nextScene), 2500);
+}
+
+// ── ENDING ────────────────────────────────────────────
+function renderEnding() {
+  hideHUD();
+  // Award flat completion bonus
+  awardSats(50, 'Juego completado');
+
+  // Unlock achievements
+  const w = loadWallet();
+  w.gamesCompleted = (w.gamesCompleted || 0) + 1;
+  saveWallet(w);
+  unlockAchievement('primer_bloque');
+  if (state.satsEarnedThisRun >= 90) unlockAchievement('maestro');
+  if (w.gamesCompleted >= 5) unlockAchievement('pueblo');
+
+  const walletFinal = loadWallet();
+
+  let conclusion = '';
+  if (state.satsEarnedThisRun >= 90) {
+    conclusion = `<strong>${state.playerName}</strong>, respondiste todo perfectamente. Ya sabes lo que millones no saben. Bitcoin es tuyo para usar, guardar y compartir. ¡El tesoro del pueblo ahora es tuyo!`;
+  } else if (state.satsEarnedThisRun >= 65) {
+    conclusion = `<strong>${state.playerName}</strong>, vas muy bien en tu camino. Tienes las bases de Bitcoin. Sigue explorando y pronto serás un experto del pueblo.`;
+  } else {
+    conclusion = `<strong>${state.playerName}</strong>, diste el primer paso. El camino hacia Bitcoin es largo pero vale cada paso. ¡Vuelve a intentarlo!`;
+  }
+
+  screen.innerHTML = `
+    <div id="ending-screen">
+      <div class="poster-wrap" id="poster">
+        <div class="poster-corner tl"></div>
+        <div class="poster-corner tr"></div>
+        <div class="poster-corner bl"></div>
+        <div class="poster-corner br"></div>
+
+        <div class="poster-label">✦ Gran Estreno ✦</div>
+        <div class="poster-title">El Tesoro<br>del Pueblo</div>
+        <div class="poster-subtitle">Una Historia de Bitcoin en la Época de Oro</div>
+
+        <div class="divider" style="margin:0.8rem auto;"></div>
+
+        <div class="poster-stars">⚡</div>
+        <div class="poster-stars-label" style="font-size:1.6rem;color:var(--gold-light);font-family:'Playfair Display',serif;font-weight:700;">
+          ${state.satsEarnedThisRun} SATS GANADOS
+        </div>
+
+        <div class="poster-name">${state.playerName}</div>
+        <div class="poster-role">Guardián del Tesoro Digital</div>
+
+        <div class="poster-conclusion">${conclusion}</div>
+
+        <div class="poster-cast">
+          CON LAS ACTUACIONES DE<br>
+          Pedro Infante · María Félix · Cantinflas<br>
+          Jorge Negrete · Dolores del Río<br>
+          y El Cacique como el villano<br><br>
+          MÚSICA DE LA ÉPOCA · BITCOIN EDUCATION<br>
+          HACKATHON BITCOIN MÉXICO 2026
+        </div>
+
+        <!-- SAT REWARD BOX -->
+        <div class="sat-reward-box">
+          <div class="sat-earned-label">⚡ Sats ganados esta partida</div>
+          <div class="sat-earned-amount">${state.satsEarnedThisRun} sats</div>
+          <div class="sat-total-label">Tu balance total: ${walletFinal.satBalance} sats · Racha: ${walletFinal.currentStreak > 0 ? `🔥 ${walletFinal.currentStreak} día${walletFinal.currentStreak > 1 ? 's' : ''}` : '—'}</div>
+
+          <!-- CLAIM SECTION -->
+          <div class="claim-section">
+            <input class="ln-input" id="ln-address" type="text"
+              placeholder="tu@lightningaddress.com" />
+            <button class="btn-claim" onclick="claimSats()">
+              ⚡ Reclamar ${walletFinal.satBalance} sats vía Lightning
+            </button>
+            <div class="claim-status" id="claim-status"></div>
+          </div>
+        </div>
+
+        <!-- ACHIEVEMENTS -->
+        <div style="font-family:'Special Elite',cursive;font-size:0.72rem;letter-spacing:0.2rem;color:var(--gold);text-transform:uppercase;margin-bottom:0.4rem;">Logros</div>
+        <div class="achievement-grid">
+          ${ACHIEVEMENTS.map(a => `
+            <div class="achievement-badge ${walletFinal.achievements.includes(a.id) ? '' : 'locked'}" title="${a.desc}">
+              <span class="badge-icon">${a.icon}</span>
+              <span>${a.name}</span>
+            </div>
+          `).join('')}
+        </div>
+
+        <button class="btn-share" onclick="shareResult()">
+          📲 Compartir mi Cartel
+        </button>
+        <button class="btn-replay" onclick="restartGame()">
+          🎬 Volver a Jugar
+        </button>
+      </div>
+    </div>`;
+}
+
+// ── SHARE ─────────────────────────────────────────────
+function shareResult() {
+  const shareText =
+`🎬 ¡Acabo de completar "El Tesoro del Pueblo"!
+
+Aprendí Bitcoin con las estrellas de la Época de Oro y gané:
+⚡ ${state.satsEarnedThisRun} sats en esta sesión
+
+🎭 Pedro Infante · María Félix · Cantinflas
+🎩 Jorge Negrete · Dolores del Río
+
+¿Tú también quieres ganar sats aprendiendo Bitcoin?
+#ElTesoroDelPueblo #Bitcoin #HackathonBitcoin`;
+
+  if (navigator.share) {
+    navigator.share({ title: 'El Tesoro del Pueblo', text: shareText }).catch(() => copyToClipboard(shareText));
+  } else {
+    copyToClipboard(shareText);
+  }
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text)
+    .then(() => showToast('✅ Texto copiado — ¡pégalo donde quieras!'))
+    .catch(() => showToast('Copia el texto de la pantalla'));
+}
+
+// ── CLAIM SATS (ZEBEDEE integration) ─────────────────
+async function claimSats() {
+  const address = document.getElementById('ln-address').value.trim();
+  const statusEl = document.getElementById('claim-status');
+  const btn = document.querySelector('.btn-claim');
+  const w = loadWallet();
+
+  if (!address || !address.includes('@')) {
+    statusEl.textContent = '⚠️ Ingresa una Lightning Address válida (ej: tu@walletofsatoshi.com)';
+    return;
+  }
+  if (w.satBalance <= 0) {
+    statusEl.textContent = '⚠️ No tienes sats para reclamar todavía.';
+    return;
+  }
+
+  btn.disabled = true;
+  statusEl.textContent = '⚡ Conectando con ZEBEDEE...';
+
+  // Simulate ZEBEDEE API call (replace with real API key + endpoint)
+  await new Promise(r => setTimeout(r, 1500));
+  statusEl.textContent = '📡 Enviando pago Lightning...';
+  await new Promise(r => setTimeout(r, 1500));
+
+  // Mock response — replace with real ZEBEDEE API:
+  // POST https://api.zebedee.io/v0/ln-address/send-payment
+  // { "lnAddress": address, "amount": w.satBalance * 1000, "comment": "El Tesoro del Pueblo" }
+  const amountClaimed = w.satBalance;
+  w.satBalance = 0;
+  saveWallet(w);
+  updateHUD();
+
+  statusEl.innerHTML = `✅ ¡Enviados! <strong>${amountClaimed} sats</strong> → ${address}`;
+  btn.textContent = '✅ ¡Reclamados!';
+}
+
+// ── RESTART ───────────────────────────────────────────
+function restartGame() {
+  state.stars = 0;
+  state.sceneIndex = 0;
+  state.playerName = '';
+  state.satsEarnedThisRun = 0;
+  updateHUD();
+  renderTitle();
+}
+
+// ── TOAST ─────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2700);
+}
+
+// ── INIT ──────────────────────────────────────────────
+renderTitle();
+</script>
+</body>
+</html>
