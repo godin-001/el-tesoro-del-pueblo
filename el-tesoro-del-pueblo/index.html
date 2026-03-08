@@ -1325,24 +1325,39 @@ function soundLose()    { _tone(392,0.14,'sine',0.28,0); _tone(349,0.14,'sine',0
 function soundClick()   { _tone(600,0.05,'sine',0.12,0); }
 
 // ── BACKGROUND MUSIC ────────────────────────────────
-// Vals mexicano · 8 compases de 3/4 · beat = 0.35 s → loop ~8.4 s
+// Bolero lento · 8 compases de 4/4 · beat = 0.6 s → loop ~19.2 s
+// Estilo: Bésame Mucho / Sabor a Mí · escala Do menor
 const BGM_SEQ = [
-  // Compás 1 — motivo inicial ascendente
-  [659.25, 0.35, 0.55], [784.00, 0.35, 0.45], [880.00, 0.35, 0.40],
-  // Compás 2 — descenso
-  [784.00, 0.35, 0.50], [698.46, 0.35, 0.45], [659.25, 0.35, 0.45],
-  // Compás 3 — giro cromático
-  [587.33, 0.35, 0.50], [659.25, 0.35, 0.45], [698.46, 0.35, 0.45],
-  // Compás 4 — nota larga + silencio
-  [659.25, 0.70, 0.55], [0,      0.35, 0   ],
-  // Compás 5 — frase nueva, más alta
-  [880.00, 0.35, 0.55], [784.00, 0.35, 0.45], [698.46, 0.35, 0.45],
-  // Compás 6 — eco
-  [659.25, 0.35, 0.50], [587.33, 0.35, 0.45], [523.25, 0.35, 0.45],
-  // Compás 7 — cadencia descendente
-  [587.33, 0.35, 0.50], [523.25, 0.35, 0.45], [493.88, 0.35, 0.45],
-  // Compás 8 — resolución
-  [440.00, 1.05, 0.50],
+  // Compás 1 — apertura melancólica
+  [622.25, 0.60, 0.55], // Eb5
+  [587.33, 0.60, 0.48], // D5
+  [523.25, 1.20, 0.60], // C5 (mitad — suspiro)
+  // Compás 2 — respuesta ascendente
+  [466.16, 0.60, 0.52], // Bb4
+  [523.25, 0.60, 0.45], // C5
+  [587.33, 1.20, 0.55], // D5 (mitad)
+  // Compás 3 — subida dramática
+  [784.00, 0.60, 0.55], // G5
+  [698.46, 0.60, 0.48], // F5
+  [622.25, 1.20, 0.60], // Eb5 (mitad)
+  // Compás 4 — nota larga + silencio (respiro)
+  [587.33, 1.80, 0.55], // D5 (3 tiempos)
+  [0,      0.60, 0   ], // silencio
+  // Compás 5 — descenso cromático (nostalgia)
+  [523.25, 0.60, 0.52], // C5
+  [466.16, 0.60, 0.48], // Bb4
+  [415.30, 0.60, 0.45], // Ab4
+  [392.00, 0.60, 0.42], // G4
+  // Compás 6 — cadencia interior
+  [349.23, 0.60, 0.45], // F4
+  [392.00, 0.60, 0.45], // G4
+  [415.30, 1.20, 0.55], // Ab4 (mitad)
+  // Compás 7 — reexposición con esperanza
+  [466.16, 0.60, 0.52], // Bb4
+  [523.25, 0.60, 0.48], // C5
+  [587.33, 1.20, 0.55], // D5 (mitad)
+  // Compás 8 — resolución final (redonda)
+  [523.25, 2.40, 0.55], // C5 (4 tiempos)
 ];
 
 let _bgm = null;
@@ -1350,19 +1365,36 @@ let _bgm = null;
 function bgmPluck(freq, startTime, vol) {
   if (!freq || !_bgm) return;
   try {
-    const ctx = _ctx();
+    const ctx  = _ctx();
     const osc  = ctx.createOscillator();
+    const lfo  = ctx.createOscillator(); // vibrato
+    const lfoG = ctx.createGain();
     const gain = ctx.createGain();
+
     osc.connect(gain);
     gain.connect(_bgm.masterGain);
-    osc.type = 'triangle';
+
+    // Timbre bolero: onda seno (suave, aterciopelada)
+    osc.type = 'sine';
     osc.frequency.setValueAtTime(freq, startTime);
-    osc.frequency.exponentialRampToValueAtTime(freq * 0.997, startTime + 0.4);
+
+    // Vibrato sutil — arranca 0.2 s después, como cantante de bolero
+    lfo.type = 'sine';
+    lfo.frequency.setValueAtTime(5.5, startTime); // 5.5 Hz
+    lfoG.gain.setValueAtTime(0, startTime);
+    lfoG.gain.setTargetAtTime(freq * 0.0045, startTime + 0.2, 0.1);
+    lfo.connect(lfoG);
+    lfoG.connect(osc.frequency);
+    lfo.start(startTime);
+    lfo.stop(startTime + 2.2);
+
+    // Envelope largo y suave (legato)
     gain.gain.setValueAtTime(0, startTime);
-    gain.gain.linearRampToValueAtTime(vol * 0.28, startTime + 0.008);
-    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.85);
+    gain.gain.linearRampToValueAtTime(vol * 0.30, startTime + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 1.9);
+
     osc.start(startTime);
-    osc.stop(startTime + 0.9);
+    osc.stop(startTime + 1.95);
   } catch(e) {}
 }
 
@@ -1383,7 +1415,7 @@ function startBGM() {
   try {
     const ctx = _ctx();
     const masterGain = ctx.createGain();
-    masterGain.gain.value = 0.38;
+    masterGain.gain.value = 0.30;
     masterGain.connect(ctx.destination);
     _bgm = { masterGain, nextBeat: ctx.currentTime + 0.4, seqIdx: 0, timer: null, muted: false };
     bgmSchedule();
@@ -1398,7 +1430,7 @@ function toggleBGM() {
     _bgm.masterGain.gain.setTargetAtTime(0, _ctx().currentTime, 0.3);
     if (btn) { btn.textContent = '🔇'; btn.title = 'Activar música'; }
   } else {
-    _bgm.masterGain.gain.setTargetAtTime(0.38, _ctx().currentTime, 0.3);
+    _bgm.masterGain.gain.setTargetAtTime(0.30, _ctx().currentTime, 0.3);
     bgmSchedule();
     if (btn) { btn.textContent = '🎵'; btn.title = 'Silenciar música'; }
   }
