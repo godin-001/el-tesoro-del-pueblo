@@ -1333,6 +1333,7 @@ function startBGM() {
   const audio = document.getElementById('bgm-audio');
   if (!audio) return;
   audio.volume = 0.08;
+  audio.currentTime = 0;
   audio.play().catch(() => {});
 }
 
@@ -2868,6 +2869,10 @@ async function claimSats() {
 
 // ── RESTART ───────────────────────────────────────────
 function restartGame() {
+  const audio = document.getElementById('bgm-audio');
+  if (audio) { audio.pause(); audio.currentTime = 0; }
+  const btn = document.getElementById('music-btn');
+  if (btn) btn.textContent = '🎵';
   state.stars = 0;
   state.sceneIndex = 0;
   state.playerName = '';
