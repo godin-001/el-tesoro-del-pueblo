@@ -694,9 +694,10 @@
     ══════════════════════════════ */
     #balero-screen {
       display: flex; flex-direction: column;
-      align-items: center; justify-content: flex-start;
+      align-items: center; justify-content: center;
+      gap: 0.4rem;
       width: 100%; height: 100%;
-      padding: 0.6rem 1.5rem 1rem;
+      padding: 2.5rem 1.5rem 1.2rem;
       overflow: hidden;
     }
     .balero-title {
@@ -704,24 +705,24 @@
       font-size: clamp(1.3rem, 4vw, 1.8rem);
       font-weight: 700; font-style: italic;
       color: var(--gold-light); text-align: center;
-      margin-bottom: 0.15rem;
+      
     }
     .balero-subtitle {
       font-family: 'Special Elite', cursive;
       font-size: 0.65rem; letter-spacing: 0.12rem;
       color: var(--cream-dim); text-align: center;
-      margin-bottom: 0.4rem;
+      
     }
     .balero-game-area {
       display: flex; justify-content: center;
-      margin-bottom: 0.3rem;
+      
       filter: drop-shadow(0 4px 16px rgba(0,0,0,0.6));
     }
     #balero-svg { overflow: visible; }
     .balero-zone-wrap {
       display: flex; flex-direction: column;
       align-items: center; gap: 3px;
-      margin-bottom: 0.5rem;
+      
     }
     .balero-zone-bar {
       width: 160px; height: 12px;
@@ -743,7 +744,7 @@
       display: flex; gap: 2rem;
       font-family: 'Special Elite', cursive;
       font-size: 0.85rem; color: var(--cream-dim);
-      margin-bottom: 0.7rem;
+      
     }
     .balero-score strong { color: var(--gold-light); font-size: 1rem; }
     .btn-balero {
@@ -772,9 +773,10 @@
     ══════════════════════════════ */
     #cajafuerte-screen {
       display: flex; flex-direction: column;
-      align-items: center; justify-content: flex-start;
+      align-items: center; justify-content: center;
+      gap: 0.4rem;
       width: 100%; height: 100%;
-      padding: 0.6rem 1.5rem 1rem;
+      padding: 1.2rem 1.5rem;
       overflow: hidden;
     }
     .cf-title {
@@ -792,7 +794,6 @@
     }
     .cf-game-area {
       display: flex; justify-content: center;
-      margin-bottom: 0.4rem;
       filter: drop-shadow(0 4px 20px rgba(0,0,0,0.7));
     }
     .cf-score {
@@ -821,6 +822,123 @@
       font-size: 0.86rem; line-height: 1.5;
       text-align: center; color: var(--cream);
       min-height: 2.2rem; padding: 0 1rem;
+    }
+
+    /* ══════════════════════════════
+       ROUTE GAME — DOLORES DEL RÍO
+    ══════════════════════════════ */
+    #route-screen {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.5rem;
+      width: 100%; height: 100%;
+      padding: 2rem 1rem 1.2rem;
+      background: radial-gradient(ellipse at center, #1e1000 0%, #0a0500 100%);
+    }
+    .route-title {
+      font-family: 'Playfair Display', serif;
+      font-style: italic; font-size: 1.2rem;
+      color: var(--gold-light); text-align: center;
+    }
+    .route-subtitle {
+      font-family: 'Special Elite', cursive;
+      color: var(--cream-dim); font-size: 0.65rem;
+      letter-spacing: 0.1rem; text-align: center;
+    }
+    .route-cities {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      width: 100%; max-width: 320px; padding: 0 8px;
+    }
+    .route-city {
+      font-size: 1.3rem; text-align: center;
+      font-family: 'Special Elite', cursive;
+    }
+    .route-city span {
+      display: block; font-size: 0.6rem;
+      color: var(--cream-dim); letter-spacing: 0.05rem;
+    }
+    .route-city-arrow { font-size: 1.2rem; color: var(--gold); flex:1; text-align:center; }
+    .route-bottom {
+      display: flex; gap: 2rem;
+      font-family: 'Special Elite', cursive;
+      font-size: 0.82rem; color: var(--cream-dim);
+    }
+    .route-msg {
+      font-family: 'Lora', serif; font-style: italic;
+      font-size: 0.88rem; color: var(--cream);
+      text-align: center; min-height: 2rem;
+      padding: 0 0.5rem; line-height: 1.4;
+    }
+
+    /* ══════════════════════════════
+       JORGE GAME — LA CARRERA DEL TIEMPO
+    ══════════════════════════════ */
+    #jorge-screen {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.6rem;
+      width: 100%; height: 100%;
+      padding: 2rem 1.5rem 1.2rem;
+      background: radial-gradient(ellipse at center, #1e1000 0%, #0a0500 100%);
+    }
+    .jorge-title {
+      font-family: 'Playfair Display', serif;
+      font-style: italic; font-size: 1.2rem;
+      color: var(--gold-light); text-align: center;
+    }
+    .jorge-subtitle {
+      font-family: 'Special Elite', cursive;
+      color: var(--cream-dim); font-size: 0.65rem;
+      letter-spacing: 0.1rem; text-align: center;
+    }
+    .jorge-bars {
+      display: flex; align-items: flex-end; gap: 2rem;
+      justify-content: center; width: 100%;
+    }
+    .jorge-bar-col {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 6px;
+    }
+    .jorge-bar-label {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.78rem; color: var(--gold);
+      letter-spacing: 0.08rem; text-align: center;
+    }
+    .jorge-bar-track {
+      width: 70px; height: 160px;
+      background: rgba(0,0,0,0.45);
+      border: 1.5px solid var(--brown-mid);
+      border-radius: 8px; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+    }
+    .jorge-bar-fill { width: 100%; transition: height 0.12s linear; }
+    .jorge-bar-pct {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--cream);
+    }
+    .jorge-arrow {
+      font-size: 2rem; color: var(--gold);
+      margin-bottom: 80px; opacity: 0.7;
+    }
+    .btn-jorge {
+      padding: 14px 0; width: 100%; max-width: 300px;
+      background: linear-gradient(135deg, #f7931a, #c9a227);
+      border: none; border-radius: 10px;
+      color: var(--sepia-dark); font-family: 'Special Elite', cursive;
+      font-size: 0.95rem; letter-spacing: 0.08rem;
+      cursor: pointer; font-weight: bold;
+      box-shadow: 0 4px 16px rgba(201,162,39,0.4);
+      transition: transform 0.1s, opacity 0.2s;
+    }
+    .btn-jorge:active { transform: scale(0.97); }
+    .btn-jorge:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .jorge-msg {
+      font-family: 'Lora', serif; font-style: italic;
+      font-size: 0.88rem; color: var(--cream);
+      text-align: center; min-height: 2.2rem;
+      padding: 0 0.5rem; line-height: 1.4;
     }
 
     /* ══════════════════════════════
@@ -1057,7 +1175,8 @@ const SCENES = [
   },
   {
     type: 'dialogue', act: 'ACTO V', bg: 'hacienda', character: 'jorge',
-    text: 'El peso mexicano, en cambio... el gobierno puede imprimir los que quiera. Y cada vez que imprimen más, los que tú ya tienes valen menos. A eso se llama <em>inflación</em>.'
+    text: 'El peso mexicano, en cambio... el gobierno puede imprimir los que quiera. Y cada vez que imprimen más, los que tú ya tienes valen menos. A eso se llama <em>inflación</em>.',
+    next: 28
   },
   {
     type: 'choice', act: 'ACTO V', bg: 'hacienda', character: 'jorge',
@@ -1095,7 +1214,8 @@ const SCENES = [
   },
   {
     type: 'dialogue', act: 'ACTO VI', bg: 'frontera', character: 'dolores',
-    text: 'Millones de familias mexicanas esperan días para recibir remesas del extranjero, y pierden hasta el 10% en comisiones. Con Bitcoin, el dinero llega en minutos, directo, sin intermediarios.'
+    text: 'Millones de familias mexicanas esperan días para recibir remesas del extranjero, y pierden hasta el 10% en comisiones. Con Bitcoin, el dinero llega en minutos, directo, sin intermediarios.',
+    next: 29
   },
   {
     type: 'choice', act: 'ACTO VI', bg: 'frontera', character: 'dolores',
@@ -1126,9 +1246,19 @@ const SCENES = [
     type: 'ending'
   },
 
-  // CATCH GAME — ACTO I (index 27, reached from Act I choice → next: 27)
+  // CATCH GAME — ACTO I (index 27)
   {
     type: 'catchgame', act: 'ACTO I', next: 5
+  },
+
+  // JORGE GAME — ACTO V (index 28)
+  {
+    type: 'jorgegame', act: 'ACTO V', next: 22
+  },
+
+  // ROUTE GAME — ACTO VI (index 29)
+  {
+    type: 'routegame', act: 'ACTO VI', next: 26
   }
 ];
 
@@ -1253,6 +1383,8 @@ function render() {
   else if (scene.type === 'balero')     renderBalero(scene);
   else if (scene.type === 'cajafuerte') renderCajaFuerte(scene);
   else if (scene.type === 'catchgame')  renderCatchGame(scene);
+  else if (scene.type === 'jorgegame')  renderJorgeGame(scene);
+  else if (scene.type === 'routegame')  renderRouteGame(scene);
   else if (scene.type === 'ending')     renderEnding();
 
   // Animate in
@@ -1481,7 +1613,7 @@ function closeFeedback(nextIdx) {
 
 // ── MINI-GAME ─────────────────────────────────────────
 function renderMinigame(scene) {
-  showHUD();
+  hideHUD();
   mgShuffled     = [...MINIGAME_STEPS].sort(() => Math.random() - 0.5);
   mgSlots        = { 1: null, 2: null, 3: null, 4: null, 5: null };
   mgSelectedCard = null;
@@ -1663,13 +1795,13 @@ let bState = {
 };
 
 function renderBalero(scene) {
-  showHUD();
+  hideHUD();
   if (bState.animId) cancelAnimationFrame(bState.animId);
   bState = { phase: 0, speed: 0.032, attempts: 0, catches: 0, animId: null, nextScene: scene.next, locked: false };
 
   screen.innerHTML = `
     <div id="balero-screen">
-      <div class="act-badge" style="position:static;margin-bottom:0.3rem;">ACTO II</div>
+      <div class="act-badge" style="position:static;">ACTO II</div>
       <div class="balero-title">🪀 ¡Atrápalo, Compadre!</div>
       <div class="balero-subtitle">TOCA CUANDO LA BOLA LLEGUE A LA COPA</div>
 
@@ -1855,7 +1987,7 @@ let cfState = {
 };
 
 function renderCajaFuerte(scene) {
-  showHUD();
+  hideHUD();
   if (cfState.animId) cancelAnimationFrame(cfState.animId);
   cfState = { angle: 0, speed: 2.8, attempts: 0, catches: 0, animId: null, nextScene: scene.next, locked: false };
 
@@ -1883,7 +2015,7 @@ function renderCajaFuerte(scene) {
 
   screen.innerHTML = `
     <div id="cajafuerte-screen">
-      <div class="act-badge" style="position:static;margin-bottom:0.3rem;">ACTO III</div>
+      <div class="act-badge" style="position:static;">ACTO III</div>
       <div class="cf-title">🔐 La Caja Fuerte de La Doña</div>
       <div class="cf-subtitle">DETÉN LA RULETA CUANDO ₿ APUNTE A LA FLECHA</div>
 
@@ -2042,6 +2174,290 @@ function cajaFuerteCatch() {
   }, 950);
 }
 
+// ── ROUTE GAME — DOLORES DEL RÍO ─────────────────────
+const RG_ROUNDS = [
+  { top: 'wu',    mid: 'btc',   bot: 'banco' },
+  { top: 'banco', mid: 'wu',    bot: 'btc'   },
+  { top: 'btc',   mid: 'banco', bot: 'wu'    },
+];
+
+const RG_INFO = {
+  btc:   { label: 'Bitcoin ⚡',    detail: '0% · Instantáneo',  stroke: '#c9a227', tc: '#f0d080', dash: '',    correct: true,  node: null },
+  wu:    { label: 'Western Union', detail: '-10% · 3 días',      stroke: '#8b2020', tc: '#ff9090', dash: '6,3', correct: false, node: '#8b2020' },
+  banco: { label: 'Banco 🏦',      detail: '-8% · 5 días',       stroke: '#6b4c00', tc: '#c8a860', dash: '4,4', correct: false, node: '#6b4c00' },
+};
+
+let RG = { round: 0, correct: 0, answered: false, over: false, nextScene: null };
+
+function renderRouteGame(scene) {
+  hideHUD();
+  Object.assign(RG, { round: 0, correct: 0, answered: false, over: false, nextScene: scene.next });
+
+  screen.innerHTML = `
+    <div id="route-screen">
+      <div style="text-align:center;flex-shrink:0;">
+        <div class="act-badge" style="position:static;display:inline-block;">${scene.act}</div>
+        <div class="route-title">🗺️ Traza la Ruta</div>
+        <div class="route-subtitle">TOCA EL CAMINO MÁS RÁPIDO Y BARATO PARA ENVIAR DINERO</div>
+      </div>
+
+      <div class="route-cities">
+        <div class="route-city">🇲🇽<span>Cdad. de México</span></div>
+        <div class="route-city-arrow">→ → →</div>
+        <div class="route-city">🇺🇸<span>Chicago, IL</span></div>
+      </div>
+
+      <div id="rg-map-wrap" style="width:100%;display:flex;justify-content:center;flex-shrink:0;"></div>
+
+      <div class="route-bottom">
+        <span>Ronda <strong id="rg-rnum">1</strong> / 3</span>
+        <span>⚡ <strong id="rg-cnum">0</strong> correctas</span>
+      </div>
+      <div id="rg-msg" class="route-msg">¿Por cuál ruta envías el dinero a tu familia?</div>
+    </div>`;
+
+  rgDraw();
+}
+
+function rgDraw() {
+  const d = RG_ROUNDS[RG.round];
+  const slots = [
+    { type: d.top,  pathD: 'M25,80 C95,18 225,18 295,80',   lx: 160, ly: 10, nx: 160, ny: 18 },
+    { type: d.mid,  pathD: 'M25,80 L295,80',                 lx: 160, ly: 62, nx: null, ny: null },
+    { type: d.bot,  pathD: 'M25,80 C95,142 225,142 295,80', lx: 160, ly: 134, nx: 160, ny: 142 },
+  ];
+
+  const svgPaths = slots.map((s, i) => {
+    const inf = RG_INFO[s.type];
+    const nodeEl = (inf.node && s.nx)
+      ? `<circle cx="${s.nx}" cy="${s.ny}" r="5" fill="${inf.node}" stroke="#0a0500" stroke-width="1.5"/>
+         <circle cx="${s.nx}" cy="${s.ny}" r="2" fill="#fff" opacity="0.4"/>`
+      : '';
+    const sw = s.type === 'btc' ? '3.5' : '2.5';
+    const dashAttr = inf.dash ? `stroke-dasharray="${inf.dash}"` : '';
+    return `
+      <g id="rgp-${i}" onclick="rgSelect(${i},'${s.type}')" style="cursor:pointer;">
+        <path d="${s.pathD}" fill="none" stroke="transparent" stroke-width="24"/>
+        <path d="${s.pathD}" fill="none" stroke="${inf.stroke}" stroke-width="${sw}" ${dashAttr} stroke-linecap="round"/>
+        ${nodeEl}
+        <rect x="${s.lx-52}" y="${s.ly}" width="104" height="28" rx="5"
+              fill="rgba(8,4,0,0.88)" stroke="${inf.stroke}" stroke-width="1"/>
+        <text x="${s.lx}" y="${s.ly+11}" text-anchor="middle"
+              fill="${inf.tc}" font-family="Special Elite,cursive" font-size="9.5">${inf.label}</text>
+        <text x="${s.lx}" y="${s.ly+22}" text-anchor="middle"
+              fill="${inf.tc}" font-family="Lora,serif" font-size="8.5" font-style="italic">${inf.detail}</text>
+      </g>`;
+  }).join('');
+
+  const svg = `<svg viewBox="0 0 320 160" width="320" height="160" style="max-width:100%;overflow:visible;">
+    <circle cx="25" cy="80" r="7" fill="#c9a227" stroke="#0a0500" stroke-width="1.5"/>
+    <circle cx="295" cy="80" r="7" fill="#c9a227" stroke="#0a0500" stroke-width="1.5"/>
+    ${svgPaths}
+  </svg>`;
+
+  const wrap = document.getElementById('rg-map-wrap');
+  if (wrap) wrap.innerHTML = svg;
+}
+
+function rgSelect(idx, type) {
+  if (RG.answered || RG.over) return;
+  RG.answered = true;
+  const inf = RG_INFO[type];
+  if (inf.correct) RG.correct++;
+
+  // Visual feedback
+  const el = document.getElementById(`rgp-${idx}`);
+  if (el) el.style.filter = inf.correct
+    ? 'drop-shadow(0 0 10px #00c851)'
+    : 'drop-shadow(0 0 10px #ff4444)';
+
+  // Highlight correct if wrong
+  if (!inf.correct) {
+    const d = RG_ROUNDS[RG.round];
+    ['top','mid','bot'].forEach((pos, i) => {
+      if (d[pos] === 'btc') {
+        const cel = document.getElementById(`rgp-${i}`);
+        if (cel) cel.style.filter = 'drop-shadow(0 0 12px #c9a227)';
+      }
+    });
+  }
+
+  const msg = document.getElementById('rg-msg');
+  if (msg) {
+    msg.textContent = inf.correct
+      ? '✅ ¡Correcto! Bitcoin: directo, sin intermediarios, sin comisiones.'
+      : `❌ ¡Bitcoin era el camino directo! ${inf.detail} se llevan los otros.`;
+    msg.style.color = inf.correct ? '#00c851' : '#ff6b6b';
+  }
+
+  setTimeout(() => {
+    RG.round++;
+    RG.answered = false;
+    const rn = document.getElementById('rg-rnum');
+    const cn = document.getElementById('rg-cnum');
+    if (rn) rn.textContent = Math.min(RG.round + 1, 3);
+    if (cn) cn.textContent = RG.correct;
+
+    if (RG.round >= 3) { rgEnd(); return; }
+    if (msg) { msg.textContent = '¿Por cuál ruta envías el dinero a tu familia?'; msg.style.color = 'var(--cream)'; }
+    rgDraw();
+  }, 1500);
+}
+
+function rgEnd() {
+  RG.over = true;
+  const msg = document.getElementById('rg-msg');
+  if (RG.correct === 3) {
+    awardSats(20, 'Route game perfecto');
+    if (msg) { msg.textContent = `🏆 ¡Perfecto! 3/3 — "Sin fronteras, como yo." — Dolores`; msg.style.color = 'var(--gold)'; }
+  } else if (RG.correct >= 2) {
+    awardSats(15, 'Route game bien');
+    if (msg) { msg.textContent = `⚡ ${RG.correct}/3 correctas +15 sats — "Bitcoin no necesita permiso." — Dolores`; msg.style.color = 'var(--gold)'; }
+  } else {
+    deductSats(10);
+    if (msg) { msg.textContent = `💸 ${RG.correct}/3 correctas -10 sats — "La próxima elige el camino directo." — Dolores`; msg.style.color = '#ff6b6b'; }
+  }
+  setTimeout(() => goTo(RG.nextScene), 2600);
+}
+
+// ── JORGE GAME — LA CARRERA DEL TIEMPO ───────────────
+const JG = {
+  pesoPct: 100, btcPct: 0, clicks: 0, maxClicks: 4,
+  over: false, animId: null, lastTime: 0, nextScene: null
+};
+
+function renderJorgeGame(scene) {
+  hideHUD();
+  Object.assign(JG, {
+    pesoPct: 100, btcPct: 0, clicks: 0, maxClicks: 4,
+    over: false, animId: null, lastTime: performance.now(),
+    nextScene: scene.next
+  });
+
+  screen.innerHTML = `
+    <div id="jorge-screen">
+      <div style="text-align:center;">
+        <div class="act-badge" style="position:static;display:inline-block;">${scene.act}</div>
+        <div class="jorge-title">⏳ La Carrera del Tiempo</div>
+        <div class="jorge-subtitle">SALVA TUS AHORROS ANTES DE QUE LA INFLACIÓN SE LOS COMA</div>
+        <div style="
+          margin-top:6px;
+          font-family:'Special Elite',cursive;
+          font-size:0.7rem; letter-spacing:0.05rem;
+          color:var(--brown-mid);
+          line-height:1.7;
+        ">
+          4 movimientos · cada uno transfiere ~25% a Bitcoin<br>
+          🏆 +20 sats si salvas 75%+ · ⚡ +15 sats si salvas 50%+<br>
+          💸 -10 sats si salvas menos del 50%
+        </div>
+      </div>
+
+      <div class="jorge-bars">
+        <div class="jorge-bar-col">
+          <div class="jorge-bar-label">💸 PESOS</div>
+          <div class="jorge-bar-track">
+            <div class="jorge-bar-fill" id="jg-peso-fill"
+              style="height:100%;background:linear-gradient(to top,#6b0f0f,#c0392b);"></div>
+          </div>
+          <div class="jorge-bar-pct" id="jg-peso-pct">100%</div>
+        </div>
+
+        <div class="jorge-arrow">→</div>
+
+        <div class="jorge-bar-col">
+          <div class="jorge-bar-label">₿ BITCOIN</div>
+          <div class="jorge-bar-track">
+            <div class="jorge-bar-fill" id="jg-btc-fill"
+              style="height:0%;background:linear-gradient(to top,#8b6010,#f0d080);"></div>
+          </div>
+          <div class="jorge-bar-pct" id="jg-btc-pct">0%</div>
+        </div>
+      </div>
+
+      <button class="btn-jorge" id="jg-btn" onclick="jgMove()">
+        ⚡ Mover a Bitcoin — <span id="jg-remaining">${JG.maxClicks}</span> movimientos
+      </button>
+      <div id="jg-msg" class="jorge-msg">¡El peso se devalúa! ¡Mueve tus ahorros a Bitcoin!</div>
+    </div>`;
+
+  JG.animId = requestAnimationFrame(jgLoop);
+}
+
+function jgLoop(timestamp) {
+  if (JG.over) return;
+  const dt = Math.min((timestamp - JG.lastTime) / 1000, 0.05);
+  JG.lastTime = timestamp;
+
+  JG.pesoPct = Math.max(0, JG.pesoPct - 8.5 * dt);
+
+  const pesoFill = document.getElementById('jg-peso-fill');
+  const pesoPctEl = document.getElementById('jg-peso-pct');
+  const btcFill = document.getElementById('jg-btc-fill');
+  const btcPctEl = document.getElementById('jg-btc-pct');
+
+  if (pesoFill) pesoFill.style.height = JG.pesoPct + '%';
+  if (pesoPctEl) pesoPctEl.textContent = Math.round(JG.pesoPct) + '%';
+  if (btcFill) btcFill.style.height = JG.btcPct + '%';
+  if (btcPctEl) btcPctEl.textContent = Math.round(JG.btcPct) + '%';
+
+  // Flash red when peso critically low
+  if (JG.pesoPct < 20 && pesoFill) {
+    pesoFill.style.filter = 'brightness(1.6)';
+  }
+
+  if (JG.pesoPct <= 0 || JG.clicks >= JG.maxClicks) {
+    jgEndGame(); return;
+  }
+  JG.animId = requestAnimationFrame(jgLoop);
+}
+
+function jgMove() {
+  if (JG.over || JG.pesoPct <= 0 || JG.clicks >= JG.maxClicks) return;
+
+  const transfer = Math.min(JG.pesoPct, 26);
+  JG.pesoPct -= transfer;
+  JG.btcPct  = Math.min(100, JG.btcPct + transfer);
+  JG.clicks++;
+
+  const remaining = JG.maxClicks - JG.clicks;
+  const remEl = document.getElementById('jg-remaining');
+  const btn   = document.getElementById('jg-btn');
+  if (remEl) remEl.textContent = remaining;
+  if (remaining <= 0 && btn) { btn.disabled = true; btn.textContent = '✓ Movimientos agotados'; }
+
+  const btcFill = document.getElementById('jg-btc-fill');
+  if (btcFill) { btcFill.style.filter = 'brightness(1.6)'; setTimeout(() => { if(btcFill) btcFill.style.filter = ''; }, 250); }
+
+  const msg = document.getElementById('jg-msg');
+  if (msg) {
+    msg.textContent = `⚡ ¡Transferido! ${Math.round(JG.btcPct)}% asegurado en Bitcoin`;
+    msg.style.color = 'var(--gold)';
+    setTimeout(() => { if(msg && !JG.over) { msg.textContent = '¡El peso sigue cayendo! ¡Sigue moviendo!'; msg.style.color = 'var(--cream)'; } }, 900);
+  }
+}
+
+function jgEndGame() {
+  JG.over = true;
+  if (JG.animId) cancelAnimationFrame(JG.animId);
+  const btn = document.getElementById('jg-btn');
+  if (btn) { btn.disabled = true; }
+  const saved = Math.round(JG.btcPct);
+  const msg = document.getElementById('jg-msg');
+
+  if (saved >= 75) {
+    awardSats(20, 'Jorge game - excelente');
+    if (msg) { msg.textContent = `🏆 ¡Salvaste el ${saved}%! +20 sats — "¡Así se protege el patrimonio!" — Jorge`; msg.style.color = 'var(--gold)'; }
+  } else if (saved >= 50) {
+    awardSats(15, 'Jorge game - bien');
+    if (msg) { msg.textContent = `⚡ Salvaste el ${saved}%. +15 sats — "Bien hecho, compadre." — Jorge`; msg.style.color = 'var(--gold)'; }
+  } else {
+    deductSats(10);
+    if (msg) { msg.textContent = `💸 Solo salvaste el ${saved}%. -10 sats — "La inflación te ganó esta vez." — Jorge`; msg.style.color = '#ff6b6b'; }
+  }
+  setTimeout(() => goTo(JG.nextScene), 2600);
+}
+
 // ── CATCH GAME — PEDRO INFANTE ────────────────────────
 const CG = {
   items: [], basketPct: 50, caught: 0, hit: 0,
@@ -2050,7 +2466,7 @@ const CG = {
 };
 
 function renderCatchGame(scene) {
-  showHUD();
+  hideHUD();
   Object.assign(CG, {
     items: [], basketPct: 50, caught: 0, hit: 0,
     spawnCount: 0, spawnTimer: 0, maxSpawn: 15,
