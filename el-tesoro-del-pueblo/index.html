@@ -1013,10 +1013,25 @@
       animation: satPop 1.2s ease-out forwards;
     }
 
+    /* ── MUSIC BUTTON ── */
+    #music-btn {
+      position: fixed; bottom: 1.4rem; right: 1.4rem; z-index: 2000;
+      width: 2.8rem; height: 2.8rem; border-radius: 50%;
+      border: 1.5px solid var(--gold);
+      background: rgba(15,9,0,0.78);
+      color: var(--gold); font-size: 1.25rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, transform 0.12s;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.55);
+    }
+    #music-btn:hover { background: rgba(201,162,39,0.2); transform: scale(1.1); }
+
   </style>
 </head>
 <body>
 <div id="screen"></div>
+<button id="music-btn" onclick="toggleBGM()" title="Silenciar música">🎵</button>
 <div id="sat-hud" style="display:none;">
   <span class="hud-sats">⚡ <span id="hud-balance">0</span> sats</span>
   <span class="hud-streak" id="hud-streak"></span>
@@ -1277,6 +1292,118 @@ let mgShuffled    = [];
 let mgSlots       = {};   // { 1: stepId|null, … 5: stepId|null }
 let mgSelectedCard = null; // stepId of the card held in hand
 
+// ── SOUND SYSTEM ─────────────────────────────────────
+let _audioCtx = null;
+
+function _ctx() {
+  if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return _audioCtx;
+}
+
+function _tone(freq, dur, type = 'sine', vol = 0.28, delay = 0) {
+  try {
+    const ctx = _ctx();
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+    gain.gain.setValueAtTime(0, ctx.currentTime + delay);
+    gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + delay + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + dur);
+    osc.start(ctx.currentTime + delay);
+    osc.stop(ctx.currentTime + delay + dur + 0.05);
+  } catch(e) {}
+}
+
+function soundSat()     { _tone(880,0.07,'sine',0.2,0); _tone(1047,0.12,'sine',0.2,0.07); }
+function soundCorrect() { _tone(523,0.09,'sine',0.25,0); _tone(659,0.09,'sine',0.25,0.09); _tone(784,0.18,'sine',0.25,0.18); }
+function soundWrong()   { _tone(330,0.14,'sine',0.28,0); _tone(262,0.22,'sine',0.28,0.12); }
+function soundWin()     { _tone(523,0.08,'sine',0.28,0); _tone(659,0.08,'sine',0.28,0.09); _tone(784,0.08,'sine',0.28,0.18); _tone(1047,0.28,'sine',0.28,0.27); }
+function soundLose()    { _tone(392,0.14,'sine',0.28,0); _tone(349,0.14,'sine',0.28,0.14); _tone(294,0.28,'sine',0.28,0.28); }
+function soundClick()   { _tone(600,0.05,'sine',0.12,0); }
+
+// ── BACKGROUND MUSIC ────────────────────────────────
+// Vals mexicano · 8 compases de 3/4 · beat = 0.35 s → loop ~8.4 s
+const BGM_SEQ = [
+  // Compás 1 — motivo inicial ascendente
+  [659.25, 0.35, 0.55], [784.00, 0.35, 0.45], [880.00, 0.35, 0.40],
+  // Compás 2 — descenso
+  [784.00, 0.35, 0.50], [698.46, 0.35, 0.45], [659.25, 0.35, 0.45],
+  // Compás 3 — giro cromático
+  [587.33, 0.35, 0.50], [659.25, 0.35, 0.45], [698.46, 0.35, 0.45],
+  // Compás 4 — nota larga + silencio
+  [659.25, 0.70, 0.55], [0,      0.35, 0   ],
+  // Compás 5 — frase nueva, más alta
+  [880.00, 0.35, 0.55], [784.00, 0.35, 0.45], [698.46, 0.35, 0.45],
+  // Compás 6 — eco
+  [659.25, 0.35, 0.50], [587.33, 0.35, 0.45], [523.25, 0.35, 0.45],
+  // Compás 7 — cadencia descendente
+  [587.33, 0.35, 0.50], [523.25, 0.35, 0.45], [493.88, 0.35, 0.45],
+  // Compás 8 — resolución
+  [440.00, 1.05, 0.50],
+];
+
+let _bgm = null;
+
+function bgmPluck(freq, startTime, vol) {
+  if (!freq || !_bgm) return;
+  try {
+    const ctx = _ctx();
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(_bgm.masterGain);
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, startTime);
+    osc.frequency.exponentialRampToValueAtTime(freq * 0.997, startTime + 0.4);
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(vol * 0.28, startTime + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.85);
+    osc.start(startTime);
+    osc.stop(startTime + 0.9);
+  } catch(e) {}
+}
+
+function bgmSchedule() {
+  if (!_bgm || _bgm.muted) return;
+  const ctx = _ctx();
+  while (_bgm.nextBeat < ctx.currentTime + 0.25) {
+    const [freq, dur, vel] = BGM_SEQ[_bgm.seqIdx % BGM_SEQ.length];
+    if (freq > 0) bgmPluck(freq, _bgm.nextBeat, vel);
+    _bgm.nextBeat += dur;
+    _bgm.seqIdx++;
+  }
+  _bgm.timer = setTimeout(bgmSchedule, 100);
+}
+
+function startBGM() {
+  if (_bgm) return;
+  try {
+    const ctx = _ctx();
+    const masterGain = ctx.createGain();
+    masterGain.gain.value = 0.38;
+    masterGain.connect(ctx.destination);
+    _bgm = { masterGain, nextBeat: ctx.currentTime + 0.4, seqIdx: 0, timer: null, muted: false };
+    bgmSchedule();
+  } catch(e) {}
+}
+
+function toggleBGM() {
+  const btn = document.getElementById('music-btn');
+  if (!_bgm) { startBGM(); return; }
+  _bgm.muted = !_bgm.muted;
+  if (_bgm.muted) {
+    _bgm.masterGain.gain.setTargetAtTime(0, _ctx().currentTime, 0.3);
+    if (btn) { btn.textContent = '🔇'; btn.title = 'Activar música'; }
+  } else {
+    _bgm.masterGain.gain.setTargetAtTime(0.38, _ctx().currentTime, 0.3);
+    bgmSchedule();
+    if (btn) { btn.textContent = '🎵'; btn.title = 'Silenciar música'; }
+  }
+}
+
 // ── WALLET (localStorage) ────────────────────────────
 const WALLET_KEY = 'etp_wallet';
 
@@ -1296,6 +1423,7 @@ function saveWallet(w) {
 }
 
 function awardSats(amount, label) {
+  soundSat();
   state.satsEarnedThisRun += amount;
   const w = loadWallet();
   w.satBalance += amount;
@@ -1312,6 +1440,7 @@ function awardSats(amount, label) {
 }
 
 function deductSats(amount) {
+  soundWrong();
   const w = loadWallet();
   const deducted = Math.min(amount, w.satBalance); // no bajar de 0
   w.satBalance = Math.max(0, w.satBalance - amount);
@@ -1351,12 +1480,12 @@ function hideHUD() {
 
 // ── ACHIEVEMENTS ─────────────────────────────────────
 const ACHIEVEMENTS = [
-  { id: 'primer_bloque', icon: '🧱', name: 'Primer Bloque',   desc: 'Completa tu primera partida' },
-  { id: 'maestro',       icon: '⭐', name: 'Maestro Bitcoin', desc: 'Obtén 5 estrellas perfectas' },
-  { id: 'fuego',         icon: '🔥', name: 'Racha de Fuego',  desc: 'Juega 3 días seguidos' },
-  { id: 'hodler',        icon: '💎', name: 'HODLer',          desc: 'Juega 7 días seguidos' },
-  { id: 'lightning',     icon: '⚡', name: 'Rayo Lightning',  desc: 'Gana el mini-juego de Cantinflas' },
-  { id: 'pueblo',        icon: '🎬', name: 'Voz del Pueblo',  desc: 'Completa 5 partidas' },
+  { id: 'compadre',  icon: '🎸', name: 'Compadre del Pueblo', desc: 'Atrapa 7+ sats con Pedro Infante' },
+  { id: 'balero',    icon: '🪀', name: 'Maestro del Balero',  desc: 'Gana el Balero en el Acto II' },
+  { id: 'ladona',    icon: '🔐', name: 'La Doña',             desc: 'Abre la Caja Fuerte en el Acto III' },
+  { id: 'lightning', icon: '⚡', name: 'Rayo Lightning',      desc: 'Ordena el blockchain en el Acto IV' },
+  { id: 'hodler',    icon: '💎', name: 'HODLer',              desc: 'Salva 75%+ en La Carrera del Tiempo' },
+  { id: 'fronteras', icon: '🗺️', name: 'Sin Fronteras',       desc: 'Elige 3/3 rutas correctas con Dolores' },
 ];
 
 function unlockAchievement(id) {
@@ -1459,6 +1588,8 @@ function startGame() {
     return;
   }
 
+  startBGM();
+
   state.playerName = name;
   state.stars = 0;
   state.sceneIndex = 0;
@@ -1474,8 +1605,8 @@ function startGame() {
     if (lastDay === yesterday) {
       w.currentStreak = (w.currentStreak || 0) + 1;
       let bonus = 20;
-      if (w.currentStreak >= 7) { bonus = 200; unlockAchievement('hodler'); }
-      else if (w.currentStreak >= 3) { bonus = 50; unlockAchievement('fuego'); }
+      if (w.currentStreak >= 7) { bonus = 200; }
+      else if (w.currentStreak >= 3) { bonus = 50; }
       w.satBalance += bonus;
       state.satsEarnedThisRun += bonus;
       setTimeout(() => showToast(`🔥 ¡Racha de ${w.currentStreak} días! +${bonus} sats`), 600);
@@ -1776,6 +1907,7 @@ function checkMinigame(nextIdx) {
   }
 
   if (correct) {
+    soundCorrect();
     awardSats(15, 'Mini-juego completado');
     unlockAchievement('lightning');
     showToast('⚡ ¡Correcto! +15 sats ganados');
@@ -1962,8 +2094,9 @@ function baleroCatch() {
       cancelAnimationFrame(bState.animId);
       const won = bState.catches >= 2;
       if (won) {
+        soundWin();
         awardSats(15, 'Balero ganado');
-        unlockAchievement('lightning');
+        unlockAchievement('balero');
         if (msg) { msg.textContent = '⚡ ¡Maestro del Balero! +15 sats — ¡Cantinflas aplaude de pie!'; msg.style.color = 'var(--gold)'; }
       } else {
         deductSats(15);
@@ -2158,7 +2291,9 @@ function cajaFuerteCatch() {
       cancelAnimationFrame(cfState.animId);
       const won = cfState.catches >= 2;
       if (won) {
+        soundWin();
         awardSats(15, 'Caja fuerte abierta');
+        unlockAchievement('ladona');
         if (msg) { msg.textContent = '⚡ ¡Maestra de la llave privada! +15 sats — La Doña asiente con elegancia.'; msg.style.color = 'var(--gold)'; }
       } else {
         deductSats(15);
@@ -2263,7 +2398,7 @@ function rgSelect(idx, type) {
   if (RG.answered || RG.over) return;
   RG.answered = true;
   const inf = RG_INFO[type];
-  if (inf.correct) RG.correct++;
+  if (inf.correct) { RG.correct++; soundCorrect(); }
 
   // Visual feedback
   const el = document.getElementById(`rgp-${idx}`);
@@ -2308,7 +2443,9 @@ function rgEnd() {
   RG.over = true;
   const msg = document.getElementById('rg-msg');
   if (RG.correct === 3) {
+    soundWin();
     awardSats(20, 'Route game perfecto');
+    unlockAchievement('fronteras');
     if (msg) { msg.textContent = `🏆 ¡Perfecto! 3/3 — "Sin fronteras, como yo." — Dolores`; msg.style.color = 'var(--gold)'; }
   } else if (RG.correct >= 2) {
     awardSats(15, 'Route game bien');
@@ -2446,7 +2583,9 @@ function jgEndGame() {
   const msg = document.getElementById('jg-msg');
 
   if (saved >= 75) {
+    soundWin();
     awardSats(20, 'Jorge game - excelente');
+    unlockAchievement('hodler');
     if (msg) { msg.textContent = `🏆 ¡Salvaste el ${saved}%! +20 sats — "¡Así se protege el patrimonio!" — Jorge`; msg.style.color = 'var(--gold)'; }
   } else if (saved >= 50) {
     awardSats(15, 'Jorge game - bien');
@@ -2582,7 +2721,9 @@ function cgEndGame() {
   const won = CG.caught >= 7;
   const msg = document.getElementById('cg-msg');
   if (won) {
+    soundWin();
     awardSats(15, 'Catch game ganado');
+    unlockAchievement('compadre');
     if (msg) { msg.textContent = `⚡ ¡Atrapaste ${CG.caught} sats! +15 sats — "¡Así cuida su dinero el pueblo!" — Pedro`; msg.style.color = 'var(--gold)'; }
   } else {
     deductSats(10);
@@ -2601,9 +2742,7 @@ function renderEnding() {
   const w = loadWallet();
   w.gamesCompleted = (w.gamesCompleted || 0) + 1;
   saveWallet(w);
-  unlockAchievement('primer_bloque');
-  if (state.satsEarnedThisRun >= 90) unlockAchievement('maestro');
-  if (w.gamesCompleted >= 5) unlockAchievement('pueblo');
+  // logros ahora se desbloquean en cada mini-juego
 
   const walletFinal = loadWallet();
 
@@ -2702,16 +2841,44 @@ Aprendí Bitcoin con las estrellas de la Época de Oro y gané:
 #ElTesoroDelPueblo #Bitcoin #HackathonBitcoin`;
 
   if (navigator.share) {
-    navigator.share({ title: 'El Tesoro del Pueblo', text: shareText }).catch(() => copyToClipboard(shareText));
+    // Móvil: menú nativo del sistema
+    navigator.share({ title: 'El Tesoro del Pueblo', text: shareText })
+      .catch(() => openTwitter(shareText));
   } else {
-    copyToClipboard(shareText);
+    // Web: directo a X
+    openTwitter(shareText);
   }
 }
 
+function openTwitter(text) {
+  const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
 function copyToClipboard(text) {
-  navigator.clipboard.writeText(text)
-    .then(() => showToast('✅ Texto copiado — ¡pégalo donde quieras!'))
-    .catch(() => showToast('Copia el texto de la pantalla'));
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text)
+      .then(() => showToast('✅ Texto copiado — ¡pégalo donde quieras!'))
+      .catch(() => copyFallback(text));
+  } else {
+    copyFallback(text);
+  }
+}
+
+function copyFallback(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none;';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showToast('✅ Texto copiado — ¡pégalo donde quieras!');
+  } catch(e) {
+    showToast('📋 No se pudo copiar automáticamente');
+  }
+  document.body.removeChild(ta);
 }
 
 // ── CLAIM SATS (ZEBEDEE integration) ─────────────────
