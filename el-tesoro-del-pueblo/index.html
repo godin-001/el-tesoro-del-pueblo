@@ -1021,10 +1021,11 @@
       background: rgba(15,9,0,0.78);
       color: var(--gold); font-size: 1.25rem;
       cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
+      display: none; align-items: center; justify-content: center;
       transition: background 0.2s, transform 0.12s;
       box-shadow: 0 2px 10px rgba(0,0,0,0.55);
     }
+    #music-btn.visible { display: flex; }
     #music-btn:hover { background: rgba(201,162,39,0.2); transform: scale(1.1); }
 
   </style>
@@ -1503,11 +1504,15 @@ function updateHUD() {
 function showHUD() {
   const hud = document.getElementById('sat-hud');
   if (hud) { updateHUD(); hud.style.display = 'flex'; }
+  const btn = document.getElementById('music-btn');
+  if (btn) btn.classList.add('visible');
 }
 
 function hideHUD() {
   const hud = document.getElementById('sat-hud');
   if (hud) hud.style.display = 'none';
+  const btn = document.getElementById('music-btn');
+  if (btn) btn.classList.remove('visible');
 }
 
 // ── ACHIEVEMENTS ─────────────────────────────────────
