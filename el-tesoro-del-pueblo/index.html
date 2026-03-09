@@ -2528,7 +2528,7 @@ function jgLoop(timestamp) {
   const dt = Math.min((timestamp - JG.lastTime) / 1000, 0.05);
   JG.lastTime = timestamp;
 
-  JG.pesoPct = Math.max(0, JG.pesoPct - 8.5 * dt);
+  JG.pesoPct = Math.max(0, JG.pesoPct - 18 * dt);
 
   const pesoFill = document.getElementById('jg-peso-fill');
   const pesoPctEl = document.getElementById('jg-peso-pct');
