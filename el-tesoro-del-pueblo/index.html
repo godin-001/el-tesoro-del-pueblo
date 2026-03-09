@@ -2800,12 +2800,13 @@ Aprendí Bitcoin con las estrellas de la Época de Oro y gané:
 ¿Tú también quieres ganar sats aprendiendo Bitcoin?
 #ElTesoroDelPueblo #Bitcoin #HackathonBitcoin`;
 
-  if (navigator.share) {
-    // Móvil: menú nativo del sistema
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile && navigator.share) {
+    // Móvil: menú nativo (más cómodo en touch)
     navigator.share({ title: 'El Tesoro del Pueblo', text: shareText })
       .catch(() => openTwitter(shareText));
   } else {
-    // Web: directo a X
+    // Desktop: directo a X siempre
     openTwitter(shareText);
   }
 }
