@@ -616,6 +616,7 @@
       transition: all 0.3s;
     }
     #sat-hud .hud-sats { font-weight: bold; color: var(--gold); }
+    .sat-img { width: 1.4em; height: 1.4em; vertical-align: middle; object-fit: contain; display: inline-block; }
     #sat-hud .hud-streak { color: #ff8c00; }
 
     /* ══════════════════════════════
@@ -1037,7 +1038,7 @@
   <source src="bgm.mp3" type="audio/mpeg">
 </audio>
 <div id="sat-hud" style="display:none;">
-  <span class="hud-sats">⚡ <span id="hud-balance">0</span> sats</span>
+  <span class="hud-sats"><img class="sat-img" src="sat-icon.png" alt="sat"> <span id="hud-balance">0</span> sats</span>
   <span class="hud-streak" id="hud-streak"></span>
 </div>
 
@@ -1055,6 +1056,8 @@ const state = {
   sceneIndex: 0,
   satsEarnedThisRun: 0
 };
+
+const SAT_IMG = '<img class="sat-img" src="sat-icon.png" alt="sat">';
 
 // ── CHARACTER DATA ───────────────────────────────────
 const CHARS = {
@@ -1378,7 +1381,7 @@ function awardSats(amount, label) {
   // Pop animation
   const pop = document.createElement('div');
   pop.className = 'sat-pop';
-  pop.textContent = `+${amount} sats ⚡`;
+  pop.innerHTML = `+${amount} sats ${SAT_IMG}`;
   pop.style.top  = `${Math.random() * 30 + 40}%`;
   pop.style.left = `${Math.random() * 50 + 25}%`;
   document.body.appendChild(pop);
@@ -1968,7 +1971,7 @@ function renderBalero(scene) {
 
       <div class="balero-score">
         <span>Intentos: <strong id="b-att">0</strong>/3</span>
-        <span>⚡ Atrapadas: <strong id="b-cat">0</strong>/2</span>
+        <span>${SAT_IMG} Atrapadas: <strong id="b-cat">0</strong>/2</span>
       </div>
 
       <button class="btn-balero" id="balero-btn" onclick="baleroCatch()">
@@ -2183,7 +2186,7 @@ function renderCajaFuerte(scene) {
 
       <div class="cf-score">
         <span>Intentos: <strong id="cf-att">0</strong>/3</span>
-        <span>⚡ Aciertos: <strong id="cf-cat">0</strong>/2</span>
+        <span>${SAT_IMG} Aciertos: <strong id="cf-cat">0</strong>/2</span>
       </div>
 
       <button class="btn-cajafuerte" id="cf-btn" onclick="cajaFuerteCatch()">
@@ -2296,7 +2299,7 @@ function renderRouteGame(scene) {
 
       <div class="route-bottom">
         <span>Ronda <strong id="rg-rnum">1</strong> / 3</span>
-        <span>⚡ <strong id="rg-cnum">0</strong> correctas</span>
+        <span>${SAT_IMG} <strong id="rg-cnum">0</strong> correctas</span>
       </div>
       <div id="rg-msg" class="route-msg">¿Por cuál ruta envías el dinero a tu familia?</div>
     </div>`;
@@ -2463,7 +2466,7 @@ function renderJorgeGame(scene) {
       </div>
 
       <button class="btn-jorge" id="jg-btn" onclick="jgMove()">
-        ⚡ Mover a Bitcoin — <span id="jg-remaining">${JG.maxClicks}</span> movimientos
+        ${SAT_IMG} Mover a Bitcoin — <span id="jg-remaining">${JG.maxClicks}</span> movimientos
       </button>
       <div id="jg-msg" class="jorge-msg">¡El peso se devalúa! ¡Mueve tus ahorros a Bitcoin!</div>
     </div>`;
@@ -2571,7 +2574,7 @@ function renderCatchGame(scene) {
         <div class="catch-subtitle">MUEVE LA GUITARRA · ATRAPA ⚡ · ESQUIVA 💸</div>
       </div>
       <div class="catch-hud">
-        <span>⚡ <strong id="cg-caught">0</strong> atrapados</span>
+        <span>${SAT_IMG} <strong id="cg-caught">0</strong> atrapados</span>
         <span>💸 <strong id="cg-hit">0</strong> golpes</span>
       </div>
       <div id="cg-area">
@@ -2611,7 +2614,7 @@ function cgSpawnItem() {
   const id    = `cgi-${CG.spawnCount}`;
   const el    = document.createElement('div');
   el.id = id; el.className = 'cg-item';
-  el.textContent = isSat ? '⚡' : '💸';
+  el.innerHTML = isSat ? '<img src="sat-icon.png" style="width:1.8rem;height:1.8rem;object-fit:contain;">' : '💸';
   el.style.left = xPct + '%'; el.style.top = '-32px';
   area.appendChild(el);
   CG.items.push({ id, isSat, xPct, y: -32, speed });
@@ -2719,7 +2722,7 @@ function renderEnding() {
 
         <div class="divider" style="margin:0.8rem auto;"></div>
 
-        <div class="poster-stars">⚡</div>
+        <div class="poster-stars"><img src="sat-icon.png" style="width:2.5rem;height:2.5rem;object-fit:contain;vertical-align:middle;"></div>
         <div class="poster-stars-label" style="font-size:1.6rem;color:var(--gold-light);font-family:'Playfair Display',serif;font-weight:700;">
           ${state.satsEarnedThisRun} SATS GANADOS
         </div>
