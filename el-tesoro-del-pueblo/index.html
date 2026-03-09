@@ -1103,7 +1103,7 @@
 </audio>
 <div id="sat-hud" style="display:none;">
   <span class="hud-sats"><img class="sat-img" src="sat-icon.png" alt="sat"> <span id="hud-balance">0</span> sats</span>
-  <span class="hud-streak" id="hud-streak"></span>
+
 </div>
 
 <script>
@@ -1119,7 +1119,8 @@ const state = {
   maxStars: 5,
   sceneIndex: 0,
   satsEarnedThisRun: 0,
-  achievementsThisRun: []
+  achievementsThisRun: [],
+  miniGamesWon: []
 };
 
 const SAT_IMG = '<img class="sat-img" src="sat-icon.png" alt="sat">';
@@ -1478,8 +1479,7 @@ function updateHUD() {
   if (!hud) return;
   const w = loadWallet();
   document.getElementById('hud-balance').textContent = w.satBalance;
-  const streakEl = document.getElementById('hud-streak');
-  streakEl.textContent = w.currentStreak > 1 ? `🔥 ${w.currentStreak}d` : '';
+
 }
 
 function showHUD() {
@@ -1617,30 +1617,7 @@ function startGame() {
   state.sceneIndex = 0;
   state.satsEarnedThisRun = 0;
 
-  // Daily streak check
-  const w = loadWallet();
-  const today = new Date().toDateString();
-  const lastDay = w.lastPlayed ? new Date(w.lastPlayed).toDateString() : null;
-  const yesterday = new Date(Date.now() - 86400000).toDateString();
-
-  if (lastDay !== today) {
-    if (lastDay === yesterday) {
-      w.currentStreak = (w.currentStreak || 0) + 1;
-      let bonus = 20;
-      if (w.currentStreak >= 7) { bonus = 200; }
-      else if (w.currentStreak >= 3) { bonus = 50; }
-      w.satBalance += bonus;
-      state.satsEarnedThisRun += bonus;
-      setTimeout(() => showToast(`🔥 ¡Racha de ${w.currentStreak} días! +${bonus} sats`), 600);
-    } else if (lastDay !== null) {
-      w.currentStreak = 1; // streak broken
-    } else {
-      w.currentStreak = 1; // first time
-    }
-    w.lastPlayed = Date.now();
-    saveWallet(w);
-  }
-
+  state.miniGamesWon = [];
   updateHUD();
   render();
 }
@@ -1932,6 +1909,7 @@ function checkMinigame(nextIdx) {
   if (correct) {
     soundCorrect();
     awardSats(15, 'Mini-juego completado');
+    if (!state.miniGamesWon.includes('minigame')) state.miniGamesWon.push('minigame');
     unlockAchievement('lightning');
     showToast(`${SAT_IMG} ¡Correcto! +15 sats ganados`);
   } else {
@@ -2119,6 +2097,7 @@ function baleroCatch() {
       if (won) {
         soundWin();
         awardSats(15, 'Balero ganado');
+        if (!state.miniGamesWon.includes('balero')) state.miniGamesWon.push('balero');
         unlockAchievement('balero');
         if (msg) { msg.innerHTML = `${SAT_IMG} ¡Maestro del Balero! +15 sats — ¡Cantinflas aplaude de pie!`; msg.style.color = 'var(--gold)'; }
       } else {
@@ -2316,6 +2295,7 @@ function cajaFuerteCatch() {
       if (won) {
         soundWin();
         awardSats(15, 'Caja fuerte abierta');
+        if (!state.miniGamesWon.includes('cajafuerte')) state.miniGamesWon.push('cajafuerte');
         unlockAchievement('ladona');
         if (msg) { msg.innerHTML = `${SAT_IMG} ¡Maestra de la llave privada! +15 sats — La Doña asiente con elegancia.`; msg.style.color = 'var(--gold)'; }
       } else {
@@ -2532,10 +2512,12 @@ function rgEnd() {
   if (RG.correct === 3) {
     soundWin();
     awardSats(20, 'Route game perfecto');
+    if (!state.miniGamesWon.includes('route')) state.miniGamesWon.push('route');
     unlockAchievement('fronteras');
     if (msg) { msg.textContent = `🏆 ¡Perfecto! 3/3 — "Sin fronteras, como yo." — Dolores`; msg.style.color = 'var(--gold)'; }
   } else if (RG.correct >= 2) {
     awardSats(15, 'Route game bien');
+    if (!state.miniGamesWon.includes('route')) state.miniGamesWon.push('route');
     if (msg) { msg.innerHTML = `${SAT_IMG} ${RG.correct}/3 correctas +15 sats — "Bitcoin no necesita permiso." — Dolores`; msg.style.color = 'var(--gold)'; }
   } else {
     deductSats(10);
@@ -2684,10 +2666,12 @@ function jgEndGame() {
   if (saved >= 75) {
     soundWin();
     awardSats(20, 'Jorge game - excelente');
+    if (!state.miniGamesWon.includes('jorge')) state.miniGamesWon.push('jorge');
     unlockAchievement('hodler');
     if (msg) { msg.textContent = `🏆 ¡Salvaste el ${saved}%! +20 sats — "¡Así se protege el patrimonio!" — Jorge`; msg.style.color = 'var(--gold)'; }
   } else if (saved >= 50) {
     awardSats(15, 'Jorge game - bien');
+    if (!state.miniGamesWon.includes('jorge')) state.miniGamesWon.push('jorge');
     if (msg) { msg.innerHTML = `${SAT_IMG} Salvaste el ${saved}%. +15 sats — "Bien hecho, compadre." — Jorge`; msg.style.color = 'var(--gold)'; }
   } else {
     deductSats(10);
@@ -2834,6 +2818,7 @@ function cgEndGame() {
   if (won) {
     soundWin();
     awardSats(15, 'Catch game ganado');
+    if (!state.miniGamesWon.includes('catch')) state.miniGamesWon.push('catch');
     unlockAchievement('compadre');
     if (msg) { msg.innerHTML = `${SAT_IMG} ¡Atrapaste ${CG.caught} sats! +15 sats — "¡Así cuida su dinero el pueblo!" — Pedro`; msg.style.color = 'var(--gold)'; }
   } else {
@@ -2908,17 +2893,33 @@ function renderEnding() {
         <div class="sat-reward-box">
           <div class="sat-earned-label">${SAT_IMG} Sats ganados esta partida</div>
           <div class="sat-earned-amount">${state.satsEarnedThisRun} sats</div>
-          <div class="sat-total-label">Tu balance total: ${walletFinal.satBalance} sats · Racha: ${walletFinal.currentStreak > 0 ? `🔥 ${walletFinal.currentStreak} día${walletFinal.currentStreak > 1 ? 's' : ''}` : '—'}</div>
+          <div class="sat-total-label">Tu balance total: ${walletFinal.satBalance} sats</div>
 
           <!-- CLAIM SECTION -->
-          <div class="claim-section">
-            <input class="ln-input" id="ln-address" type="text"
-              placeholder="tu@direccion-lightning.com" />
-            <button class="btn-claim" onclick="claimSats()">
-              ${SAT_IMG} Reclamar ${walletFinal.satBalance} sats vía Red Relámpago
-            </button>
-            <div class="claim-status" id="claim-status"></div>
-          </div>
+          ${(() => {
+            const ALL = ['catch','balero','cajafuerte','minigame','jorge','route'];
+            const NAMES = { catch:'🤠 Atrapa los Sats', balero:'🪀 El Balero', cajafuerte:'🔐 La Caja Fuerte', minigame:'🎩 El Enredo', jorge:'⏳ La Carrera', route:'🗺️ Traza la Ruta' };
+            const missing = ALL.filter(g => !state.miniGamesWon.includes(g));
+            if (missing.length === 0) {
+              return `<div class="claim-section">
+                <input class="ln-input" id="ln-address" type="text" placeholder="tu@direccion-lightning.com" />
+                <button class="btn-claim" onclick="claimSats()">
+                  ${SAT_IMG} Reclamar ${walletFinal.satBalance} sats vía Red Relámpago
+                </button>
+                <div class="claim-status" id="claim-status"></div>
+              </div>`;
+            } else {
+              return `<div class="claim-section">
+                <div class="claim-status" id="claim-status" style="color:#ff9800;line-height:1.6;">
+                  🔒 Gana <strong>todos los mini-juegos</strong> para desbloquear el reclamo.<br>
+                  <span style="font-size:0.72rem;color:var(--cream-dim);">Te falta${missing.length > 1 ? 'n' : ''}: ${missing.map(g => NAMES[g]).join(' · ')}</span>
+                </div>
+                <button class="btn-claim" disabled style="opacity:0.35;cursor:not-allowed;pointer-events:none;">
+                  🔒 Completa todos los juegos primero
+                </button>
+              </div>`;
+            }
+          })()}
         </div>
 
         <!-- ACHIEVEMENTS -->
@@ -3103,6 +3104,7 @@ function restartGame() {
   state.playerName = '';
   state.satsEarnedThisRun = 0;
   state.achievementsThisRun = [];
+  state.miniGamesWon = [];
   updateHUD();
   renderTitle();
 }
