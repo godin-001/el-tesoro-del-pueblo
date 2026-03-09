@@ -1859,6 +1859,7 @@ function mgRefreshUI() {
 }
 
 function mgClickCard(stepId) {
+  stepId = Number(stepId);
   const slotNum = mgGetCardSlot(stepId);
   if (slotNum !== null) {
     // Pick up from slot
@@ -1883,9 +1884,9 @@ function mgClickSlot(slotNum) {
 }
 
 function mgDragStart(event, stepId) {
-  const slotNum = mgGetCardSlot(stepId);
+  const slotNum = mgGetCardSlot(Number(stepId));
   if (slotNum !== null) mgSlots[slotNum] = null;
-  mgSelectedCard = stepId;
+  mgSelectedCard = Number(stepId);
   event.dataTransfer.setData('text/plain', stepId);
   event.dataTransfer.effectAllowed = 'move';
   setTimeout(mgRefreshUI, 0);
@@ -1920,7 +1921,7 @@ function mgDrop(event, slotNum) {
 }
 
 function checkMinigame(nextIdx) {
-  const correct = [1,2,3,4,5].every(i => mgSlots[i] === CORRECT_ORDER[i - 1]);
+  const correct = [1,2,3,4,5].every(i => Number(mgSlots[i]) === CORRECT_ORDER[i - 1]);
 
   // Visual feedback on slots
   for (let i = 1; i <= 5; i++) {
