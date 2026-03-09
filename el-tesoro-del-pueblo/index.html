@@ -2590,9 +2590,21 @@ function renderJorgeGame(scene) {
 
         <div class="jorge-bar-col">
           <div class="jorge-bar-label">₿ BITCOIN</div>
-          <div class="jorge-bar-track">
-            <div class="jorge-bar-fill" id="jg-btc-fill"
-              style="height:0%;background:linear-gradient(to top,#8b6010,#f0d080);"></div>
+          <div style="position:relative;">
+            <div class="jorge-bar-track">
+              <div class="jorge-bar-fill" id="jg-btc-fill"
+                style="height:0%;background:linear-gradient(to top,#8b6010,#f0d080);"></div>
+            </div>
+            <!-- Umbral 75% → +20 sats -->
+            <div style="position:absolute;bottom:75%;left:0;right:0;transform:translateY(50%);pointer-events:none;">
+              <div style="height:2px;background:rgba(201,162,39,0.9);box-shadow:0 0 4px rgba(201,162,39,0.6);"></div>
+              <span style="position:absolute;left:calc(100% + 5px);top:50%;transform:translateY(-50%);font-family:'Special Elite',cursive;font-size:0.58rem;color:#c9a227;white-space:nowrap;">🏆+20</span>
+            </div>
+            <!-- Umbral 50% → +15 sats (mínimo para no perder) -->
+            <div style="position:absolute;bottom:50%;left:0;right:0;transform:translateY(50%);pointer-events:none;">
+              <div style="height:1.5px;background:rgba(180,180,180,0.5);"></div>
+              <span style="position:absolute;left:calc(100% + 5px);top:50%;transform:translateY(-50%);font-family:'Special Elite',cursive;font-size:0.58rem;color:#aaa;white-space:nowrap;">✓+15</span>
+            </div>
           </div>
           <div class="jorge-bar-pct" id="jg-btc-pct">0%</div>
         </div>
