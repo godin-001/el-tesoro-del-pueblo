@@ -2614,7 +2614,7 @@ function cgSpawnItem() {
   const id    = `cgi-${CG.spawnCount}`;
   const el    = document.createElement('div');
   el.id = id; el.className = 'cg-item';
-  el.innerHTML = isSat ? '<img src="sat-icon.png" style="width:4.8rem;height:4.8rem;object-fit:contain;">' : '💸';
+  el.innerHTML = isSat ? '<img src="sat-icon.png" style="width:4.8rem;height:auto;display:block;">' : '💸';
   el.style.left = xPct + '%'; el.style.top = '-32px';
   area.appendChild(el);
   CG.items.push({ id, isSat, xPct, y: -32, speed });
