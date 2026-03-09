@@ -885,6 +885,21 @@
       text-align: center; min-height: 2rem;
       padding: 0 0.5rem; line-height: 1.4;
     }
+    .rg-timer-track {
+      width: 100%; height: 8px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px; overflow: hidden;
+    }
+    .rg-timer-fill {
+      height: 100%; border-radius: 4px;
+      background: linear-gradient(to right, #c9a227, #ff9800);
+      transition: width 0.1s linear, background 0.3s;
+    }
+    .rg-timer-label {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.72rem; color: var(--cream-dim);
+      letter-spacing: 0.05rem;
+    }
 
     /* ══════════════════════════════
        JORGE GAME — LA CARRERA DEL TIEMPO
@@ -2324,7 +2339,7 @@ const RG_INFO = {
   banco: { label: 'Banco 🏦',      detail: '-8% · 5 días',       stroke: '#6b4c00', tc: '#c8a860', dash: '4,4', correct: false, node: '#6b4c00' },
 };
 
-let RG = { round: 0, correct: 0, answered: false, over: false, nextScene: null };
+let RG = { round: 0, correct: 0, answered: false, over: false, nextScene: null, timerId: null, timeLeft: 0 };
 
 function renderRouteGame(scene) {
   hideHUD();
@@ -2350,10 +2365,71 @@ function renderRouteGame(scene) {
         <span>Ronda <strong id="rg-rnum">1</strong> / 3</span>
         <span>${SAT_IMG} <strong id="rg-cnum">0</strong> correctas</span>
       </div>
+      <div style="width:100%;padding:0 0.2rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+          <span class="rg-timer-label">⏱ Tiempo</span>
+          <span class="rg-timer-label" id="rg-timer-secs">8s</span>
+        </div>
+        <div class="rg-timer-track"><div class="rg-timer-fill" id="rg-timer-fill" style="width:100%;"></div></div>
+      </div>
       <div id="rg-msg" class="route-msg">¿Por cuál ruta envías el dinero a tu familia?</div>
     </div>`;
 
   rgDraw();
+}
+
+function rgStartTimer() {
+  rgClearTimer();
+  const total = 8;
+  RG.timeLeft = total;
+  const fill  = document.getElementById('rg-timer-fill');
+  const secs  = document.getElementById('rg-timer-secs');
+  if (fill) { fill.style.width = '100%'; fill.style.background = 'linear-gradient(to right,#c9a227,#ff9800)'; }
+  if (secs) secs.textContent = total + 's';
+
+  RG.timerId = setInterval(() => {
+    if (RG.answered || RG.over) { rgClearTimer(); return; }
+    RG.timeLeft = Math.max(0, RG.timeLeft - 0.1);
+    const pct = (RG.timeLeft / total) * 100;
+    if (fill) {
+      fill.style.width = pct + '%';
+      fill.style.background = pct > 40
+        ? 'linear-gradient(to right,#c9a227,#ff9800)'
+        : 'linear-gradient(to right,#ff4444,#cc0000)';
+    }
+    if (secs) secs.textContent = Math.ceil(RG.timeLeft) + 's';
+    if (RG.timeLeft <= 0) { rgClearTimer(); rgTimeout(); }
+  }, 100);
+}
+
+function rgClearTimer() {
+  if (RG.timerId) { clearInterval(RG.timerId); RG.timerId = null; }
+}
+
+function rgTimeout() {
+  if (RG.answered || RG.over) return;
+  RG.answered = true;
+  // Destacar la ruta correcta
+  const d = RG_ROUNDS[RG.round];
+  ['top','mid','bot'].forEach((pos, i) => {
+    if (d[pos] === 'btc') {
+      const cel = document.getElementById(`rgp-${i}`);
+      if (cel) cel.style.filter = 'drop-shadow(0 0 12px #c9a227)';
+    }
+  });
+  const msg = document.getElementById('rg-msg');
+  if (msg) { msg.textContent = '⏰ ¡Tiempo! Bitcoin era el camino directo — sin intermediarios.'; msg.style.color = '#ff9800'; }
+  setTimeout(() => {
+    RG.round++;
+    RG.answered = false;
+    const rn = document.getElementById('rg-rnum');
+    const cn = document.getElementById('rg-cnum');
+    if (rn) rn.textContent = Math.min(RG.round + 1, 3);
+    if (cn) cn.textContent = RG.correct;
+    if (RG.round >= 3) { rgEnd(); return; }
+    if (msg) { msg.textContent = '¿Por cuál ruta envías el dinero a tu familia?'; msg.style.color = 'var(--cream)'; }
+    rgDraw();
+  }, 1500);
 }
 
 function rgDraw() {
@@ -2394,10 +2470,12 @@ function rgDraw() {
 
   const wrap = document.getElementById('rg-map-wrap');
   if (wrap) wrap.innerHTML = svg;
+  rgStartTimer();
 }
 
 function rgSelect(idx, type) {
   if (RG.answered || RG.over) return;
+  rgClearTimer();
   RG.answered = true;
   const inf = RG_INFO[type];
   if (inf.correct) { RG.correct++; soundCorrect(); }
@@ -2443,6 +2521,7 @@ function rgSelect(idx, type) {
 
 function rgEnd() {
   RG.over = true;
+  rgClearTimer();
   const msg = document.getElementById('rg-msg');
   if (RG.correct === 3) {
     soundWin();
