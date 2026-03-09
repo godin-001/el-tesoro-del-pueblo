@@ -1125,7 +1125,7 @@ const SCENES = [
         text: '🔐 Los guardo yo mismo con Bitcoin',
         stars: 1,
         feedback: {
-          icon: '⚡', result: '¡Ganaste!',
+          icon: SAT_IMG, result: '¡Ganaste!',
           text: 'Pedro sonríe: "¡Así se habla! Eso es ser dueño de tu propio dinero. Con Bitcoin, nadie puede tocarlo sin tu permiso. Ni el banco, ni el gobierno, ni nadie."'
         }
       }
@@ -1223,7 +1223,7 @@ const SCENES = [
         text: '₿ Los convierto a Bitcoin',
         stars: 1,
         feedback: {
-          icon: '⚡', result: '¡Ganaste!',
+          icon: SAT_IMG, result: '¡Ganaste!',
           text: 'Jorge asiente con orgullo: "Como el oro, compadre. Nadie puede imprimir más Bitcoin. Solo hay 21 millones, para siempre. Tu poder adquisitivo queda protegido."'
         }
       }
@@ -1259,10 +1259,10 @@ const SCENES = [
         }
       },
       {
-        text: '⚡ Con Bitcoin, directo a su wallet',
+        text: `${SAT_IMG} Con Bitcoin, directo a su wallet`,
         stars: 1,
         feedback: {
-          icon: '⚡', result: '¡Ganaste!',
+          icon: SAT_IMG, result: '¡Ganaste!',
           text: 'Dolores sonríe: "En minutos, sin que nadie se lleve su parte. Sin fronteras, sin intermediarios, sin permisos. Así se manda dinero en el siglo XXI."'
         }
       }
@@ -1717,7 +1717,7 @@ function renderMinigame(scene) {
 
       <div style="text-align:center;flex-shrink:0;margin-bottom:4px;">
         <div class="act-badge" style="position:static;display:inline-block;margin-bottom:2px;">${scene.act}</div>
-        <div class="mg-title" style="font-size:1.1rem;margin-bottom:1px;">⚡ El Enredo de Cantinflas</div>
+        <div class="mg-title" style="font-size:1.1rem;margin-bottom:1px;">${SAT_IMG} El Enredo de Cantinflas</div>
         <div style="font-size:1.6rem;line-height:1;">${ch.emoji}</div>
       </div>
 
@@ -1870,7 +1870,7 @@ function checkMinigame(nextIdx) {
     soundCorrect();
     awardSats(15, 'Mini-juego completado');
     unlockAchievement('lightning');
-    showToast('⚡ ¡Correcto! +15 sats ganados');
+    showToast(`${SAT_IMG} ¡Correcto! +15 sats ganados`);
   } else {
     deductSats(15);
     showToast('💡 No era ese orden. -15 sats 💸');
@@ -2057,7 +2057,7 @@ function baleroCatch() {
         soundWin();
         awardSats(15, 'Balero ganado');
         unlockAchievement('balero');
-        if (msg) { msg.textContent = '⚡ ¡Maestro del Balero! +15 sats — ¡Cantinflas aplaude de pie!'; msg.style.color = 'var(--gold)'; }
+        if (msg) { msg.innerHTML = `${SAT_IMG} ¡Maestro del Balero! +15 sats — ¡Cantinflas aplaude de pie!`; msg.style.color = 'var(--gold)'; }
       } else {
         deductSats(15);
         if (msg) { msg.textContent = '💸 -15 sats. "Ni modo, la próxima te sale, compadre." — Cantinflas'; msg.style.color = '#ff6b6b'; }
@@ -2254,7 +2254,7 @@ function cajaFuerteCatch() {
         soundWin();
         awardSats(15, 'Caja fuerte abierta');
         unlockAchievement('ladona');
-        if (msg) { msg.textContent = '⚡ ¡Maestra de la llave privada! +15 sats — La Doña asiente con elegancia.'; msg.style.color = 'var(--gold)'; }
+        if (msg) { msg.innerHTML = `${SAT_IMG} ¡Maestra de la llave privada! +15 sats — La Doña asiente con elegancia.`; msg.style.color = 'var(--gold)'; }
       } else {
         deductSats(15);
         if (msg) { msg.textContent = '💸 -15 sats. "Tu llave, tu Bitcoin. Practica más, mi amor." — La Doña'; msg.style.color = '#ff6b6b'; }
@@ -2277,7 +2277,7 @@ const RG_ROUNDS = [
 ];
 
 const RG_INFO = {
-  btc:   { label: 'Bitcoin ⚡',    detail: '0% · Instantáneo',  stroke: '#c9a227', tc: '#f0d080', dash: '',    correct: true,  node: null },
+  btc:   { label: `Bitcoin ${SAT_IMG}`,    detail: '0% · Instantáneo',  stroke: '#c9a227', tc: '#f0d080', dash: '',    correct: true,  node: null },
   wu:    { label: 'Western Union', detail: '-10% · 3 días',      stroke: '#8b2020', tc: '#ff9090', dash: '6,3', correct: false, node: '#8b2020' },
   banco: { label: 'Banco 🏦',      detail: '-8% · 5 días',       stroke: '#6b4c00', tc: '#c8a860', dash: '4,4', correct: false, node: '#6b4c00' },
 };
@@ -2409,7 +2409,7 @@ function rgEnd() {
     if (msg) { msg.textContent = `🏆 ¡Perfecto! 3/3 — "Sin fronteras, como yo." — Dolores`; msg.style.color = 'var(--gold)'; }
   } else if (RG.correct >= 2) {
     awardSats(15, 'Route game bien');
-    if (msg) { msg.textContent = `⚡ ${RG.correct}/3 correctas +15 sats — "Bitcoin no necesita permiso." — Dolores`; msg.style.color = 'var(--gold)'; }
+    if (msg) { msg.innerHTML = `${SAT_IMG} ${RG.correct}/3 correctas +15 sats — "Bitcoin no necesita permiso." — Dolores`; msg.style.color = 'var(--gold)'; }
   } else {
     deductSats(10);
     if (msg) { msg.textContent = `💸 ${RG.correct}/3 correctas -10 sats — "La próxima elige el camino directo." — Dolores`; msg.style.color = '#ff6b6b'; }
@@ -2445,7 +2445,7 @@ function renderJorgeGame(scene) {
           line-height:1.7;
         ">
           4 movimientos · cada uno transfiere ~25% a Bitcoin<br>
-          🏆 +20 sats si salvas 75%+ · ⚡ +15 sats si salvas 50%+<br>
+          🏆 +20 sats si salvas 75%+ · ${SAT_IMG} +15 sats si salvas 50%+<br>
           💸 -10 sats si salvas menos del 50%
         </div>
       </div>
@@ -2528,7 +2528,7 @@ function jgMove() {
 
   const msg = document.getElementById('jg-msg');
   if (msg) {
-    msg.textContent = `⚡ ¡Transferido! ${Math.round(JG.btcPct)}% asegurado en Bitcoin`;
+    msg.innerHTML = `${SAT_IMG} ¡Transferido! ${Math.round(JG.btcPct)}% asegurado en Bitcoin`;
     msg.style.color = 'var(--gold)';
     setTimeout(() => { if(msg && !JG.over) { msg.textContent = '¡El peso sigue cayendo! ¡Sigue moviendo!'; msg.style.color = 'var(--cream)'; } }, 900);
   }
@@ -2549,7 +2549,7 @@ function jgEndGame() {
     if (msg) { msg.textContent = `🏆 ¡Salvaste el ${saved}%! +20 sats — "¡Así se protege el patrimonio!" — Jorge`; msg.style.color = 'var(--gold)'; }
   } else if (saved >= 50) {
     awardSats(15, 'Jorge game - bien');
-    if (msg) { msg.textContent = `⚡ Salvaste el ${saved}%. +15 sats — "Bien hecho, compadre." — Jorge`; msg.style.color = 'var(--gold)'; }
+    if (msg) { msg.innerHTML = `${SAT_IMG} Salvaste el ${saved}%. +15 sats — "Bien hecho, compadre." — Jorge`; msg.style.color = 'var(--gold)'; }
   } else {
     deductSats(10);
     if (msg) { msg.textContent = `💸 Solo salvaste el ${saved}%. -10 sats — "La inflación te ganó esta vez." — Jorge`; msg.style.color = '#ff6b6b'; }
@@ -2578,7 +2578,7 @@ function renderCatchGame(scene) {
       <div style="text-align:center;flex-shrink:0;">
         <div class="act-badge" style="position:static;display:inline-block;margin-bottom:2px;">${scene.act}</div>
         <div class="catch-title"><img src="basket.png" style="width:2.2rem;height:auto;vertical-align:middle;"> ¡Atrapa los Sats, Compadre!</div>
-        <div class="catch-subtitle">MUEVE LA GUITARRA · ATRAPA ⚡ · ESQUIVA 💸</div>
+        <div class="catch-subtitle">MUEVE EL SOMBRERO · ATRAPA ${SAT_IMG} · ESQUIVA 💸</div>
       </div>
       <div class="catch-hud">
         <span>${SAT_IMG} <strong id="cg-caught">0</strong> atrapados</span>
@@ -2691,7 +2691,7 @@ function cgEndGame() {
     soundWin();
     awardSats(15, 'Catch game ganado');
     unlockAchievement('compadre');
-    if (msg) { msg.textContent = `⚡ ¡Atrapaste ${CG.caught} sats! +15 sats — "¡Así cuida su dinero el pueblo!" — Pedro`; msg.style.color = 'var(--gold)'; }
+    if (msg) { msg.innerHTML = `${SAT_IMG} ¡Atrapaste ${CG.caught} sats! +15 sats — "¡Así cuida su dinero el pueblo!" — Pedro`; msg.style.color = 'var(--gold)'; }
   } else {
     deductSats(10);
     if (msg) { msg.textContent = `💸 Solo ${CG.caught} sats. -10 sats — "¡Hay que practicar más, compadre!" — Pedro`; msg.style.color = '#ff6b6b'; }
@@ -2757,7 +2757,7 @@ function renderEnding() {
 
         <!-- SAT REWARD BOX -->
         <div class="sat-reward-box">
-          <div class="sat-earned-label">⚡ Sats ganados esta partida</div>
+          <div class="sat-earned-label">${SAT_IMG} Sats ganados esta partida</div>
           <div class="sat-earned-amount">${state.satsEarnedThisRun} sats</div>
           <div class="sat-total-label">Tu balance total: ${walletFinal.satBalance} sats · Racha: ${walletFinal.currentStreak > 0 ? `🔥 ${walletFinal.currentStreak} día${walletFinal.currentStreak > 1 ? 's' : ''}` : '—'}</div>
 
@@ -2766,7 +2766,7 @@ function renderEnding() {
             <input class="ln-input" id="ln-address" type="text"
               placeholder="tu@lightningaddress.com" />
             <button class="btn-claim" onclick="claimSats()">
-              ⚡ Reclamar ${walletFinal.satBalance} sats vía Lightning
+              ${SAT_IMG} Reclamar ${walletFinal.satBalance} sats vía Lightning
             </button>
             <div class="claim-status" id="claim-status"></div>
           </div>
@@ -2870,7 +2870,7 @@ async function claimSats() {
   }
 
   btn.disabled = true;
-  statusEl.textContent = '⚡ Conectando con ZEBEDEE...';
+  statusEl.innerHTML = `${SAT_IMG} Conectando con ZEBEDEE...`;
 
   // Simulate ZEBEDEE API call (replace with real API key + endpoint)
   await new Promise(r => setTimeout(r, 1500));
@@ -2907,7 +2907,7 @@ function restartGame() {
 function showToast(msg) {
   const t = document.createElement('div');
   t.className = 'toast';
-  t.textContent = msg;
+  t.innerHTML = msg;
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 2700);
 }
