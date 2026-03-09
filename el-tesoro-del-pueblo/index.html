@@ -1498,7 +1498,7 @@ function hideHUD() {
 
 // ── ACHIEVEMENTS ─────────────────────────────────────
 const ACHIEVEMENTS = [
-  { id: 'compadre',  icon: '🎸', img: 'https://i.imgur.com/xwXl4IY.jpeg', name: 'Compadre del Pueblo', desc: 'Atrapa 7+ sats con Pedro Infante' },
+  { id: 'compadre',  icon: '🎸', img: 'https://i.imgur.com/xwXl4IY.jpeg', name: 'Compadre del Pueblo', desc: 'Atrapa 9+ sats con Pedro Infante' },
   { id: 'balero',    icon: '🪀', img: 'https://i.imgur.com/NNoMHMa.jpeg', name: 'Maestro del Balero',  desc: 'Gana el Balero en el Acto II' },
   { id: 'ladona',    icon: '🔐', img: 'https://i.imgur.com/sg0SjgW.jpeg', name: 'La Doña',             desc: 'Abre la Caja Fuerte en el Acto III' },
   { id: 'lightning', icon: '<img src="sat-icon.png" style="width:1.8rem;height:1.8rem;object-fit:contain;">', img: 'https://i.imgur.com/UGP2vCa.jpeg', name: 'Rayo Lightning', desc: 'Ordena el blockchain en el Acto IV' },
@@ -2686,15 +2686,20 @@ function jgEndGame() {
 // ── CATCH GAME — PEDRO INFANTE ────────────────────────
 const CG = {
   items: [], basketPct: 50, caught: 0, hit: 0,
-  spawnCount: 0, spawnTimer: 0, maxSpawn: 15,
+  spawnCount: 0, spawnTimer: 0, maxSpawn: 35,
+  cgSequence: [],
   over: false, animId: null, lastTime: 0, nextScene: null
 };
 
 function renderCatchGame(scene) {
   hideHUD();
+  // Generar secuencia fija: 15 monedas + 20 billetes, mezclados
+  const seq = [...Array(15).fill(true), ...Array(20).fill(false)]
+    .sort(() => Math.random() - 0.5);
   Object.assign(CG, {
     items: [], basketPct: 50, caught: 0, hit: 0,
-    spawnCount: 0, spawnTimer: 0, maxSpawn: 15,
+    spawnCount: 0, spawnTimer: 0, maxSpawn: 35,
+    cgSequence: seq,
     over: false, animId: null, lastTime: performance.now(),
     nextScene: scene.next
   });
@@ -2741,9 +2746,9 @@ function renderCatchGame(scene) {
 function cgSpawnItem() {
   const area = document.getElementById('cg-area');
   if (!area || CG.spawnCount >= CG.maxSpawn) return;
-  const isSat = Math.random() < 0.65; // 65% sats, 35% pesos
+  const isSat = CG.cgSequence[CG.spawnCount]; // secuencia fija: 15 sats, 20 pesos
   const xPct  = 8 + Math.random() * 84;
-  const speed = 95 + Math.random() * 75;
+  const speed = 120 + Math.random() * 90;
   const id    = `cgi-${CG.spawnCount}`;
   const el    = document.createElement('div');
   el.id = id; el.className = 'cg-item';
@@ -2766,7 +2771,7 @@ function cgLoop(timestamp) {
 
   if (CG.spawnCount < CG.maxSpawn) {
     CG.spawnTimer += dt;
-    if (CG.spawnTimer >= 0.72) { cgSpawnItem(); CG.spawnTimer = 0; }
+    if (CG.spawnTimer >= 0.22) { cgSpawnItem(); CG.spawnTimer = 0; }
   }
 
   const done = [];
@@ -2811,7 +2816,7 @@ function cgLoop(timestamp) {
 function cgEndGame() {
   CG.over = true;
   if (CG.animId) cancelAnimationFrame(CG.animId);
-  const won = CG.caught >= 7;
+  const won = CG.caught >= 9;
   const msg = document.getElementById('cg-msg');
   if (won) {
     soundWin();
