@@ -2647,10 +2647,12 @@ function cgLoop(timestamp) {
     if (!el) { done.push(item); continue; }
     el.style.top = item.y + 'px';
 
-    // Colisión pixel-perfect: borde inferior del ítem toca el sombrero
+    // Colisión: el borde inferior del ítem cruza el brim visible del sombrero
+    // Usamos el 70% inferior del bRect para ignorar transparencia superior
     if (bRect) {
-      const eRect = el.getBoundingClientRect();
-      const vertOk  = eRect.bottom >= bRect.top  && eRect.top  <= bRect.bottom;
+      const eRect   = el.getBoundingClientRect();
+      const brimY   = bRect.top + bRect.height * 0.70; // línea visible del brim
+      const vertOk  = eRect.bottom >= brimY && eRect.top <= bRect.bottom;
       const horizOk = eRect.right  >= bRect.left && eRect.left <= bRect.right;
       if (vertOk && horizOk) {
         if (item.isSat) {
