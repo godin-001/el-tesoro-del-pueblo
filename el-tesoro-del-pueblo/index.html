@@ -1051,6 +1051,9 @@
 <audio id="bgm-audio" loop preload="auto">
   <source src="bgm.mp3" type="audio/mpeg">
 </audio>
+<audio id="ending-audio" preload="auto">
+  <source src="ending.mp3" type="audio/mpeg">
+</audio>
 <div id="sat-hud" style="display:none;">
   <span class="hud-sats"><img class="sat-img" src="sat-icon.png" alt="sat"> <span id="hud-balance">0</span> sats</span>
   <span class="hud-streak" id="hud-streak"></span>
@@ -2709,6 +2712,11 @@ function cgEndGame() {
 // ── ENDING ────────────────────────────────────────────
 function renderEnding() {
   hideHUD();
+  // Swap música: pausa BGM, arranca ending
+  const bgm = document.getElementById('bgm-audio');
+  if (bgm) { bgm.pause(); }
+  const end = document.getElementById('ending-audio');
+  if (end) { end.volume = 0.20; end.currentTime = 0; end.play().catch(() => {}); }
   // Award flat completion bonus
   awardSats(50, 'Juego completado');
 
@@ -2898,6 +2906,8 @@ async function claimSats() {
 
 // ── RESTART ───────────────────────────────────────────
 function restartGame() {
+  const end = document.getElementById('ending-audio');
+  if (end) { end.pause(); end.currentTime = 0; }
   const audio = document.getElementById('bgm-audio');
   if (audio) { audio.pause(); audio.currentTime = 0; }
   const btn = document.getElementById('music-btn');
