@@ -2865,7 +2865,7 @@ function launchPapelPicado() {
     '#C9A227', '#FF6E40', '#EA80FC', '#18FFFF'
   ];
 
-  const count = 700;
+  const count = 500;
   for (let i = 0; i < count; i++) {
     const piece = document.createElement('div');
     piece.className = 'papel-piece';
@@ -2874,8 +2874,8 @@ function launchPapelPicado() {
     const h     = 11 + Math.random() * 16;          // 11–27px alto
     const color = colors[Math.floor(Math.random() * colors.length)];
     const left  = Math.random() * 100;              // 0–100% horizontal
-    const dur   = 3.5 + Math.random() * 3.5;       // 3.5–7s caída
-    const delay = Math.random() * 3.2;             // 0–3.2s retraso
+    const dur   = 7  + Math.random() * 7;           // 7–14s caída lenta
+    const delay = Math.random() * 8;               // 0–8s retraso escalonado
     const anim  = Math.random() > 0.5 ? 'papelFallL' : 'papelFallR';
 
     piece.style.cssText = `
@@ -2889,8 +2889,8 @@ function launchPapelPicado() {
     overlay.appendChild(piece);
   }
 
-  // Auto-limpiar al terminar la animación (duración máx + retraso máx + buffer)
-  setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 11000);
+  // Auto-limpiar al terminar la animación (duración máx 14s + retraso máx 8s + buffer)
+  setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 24000);
 }
 
 // ── SHARE ─────────────────────────────────────────────
