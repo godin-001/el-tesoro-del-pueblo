@@ -2284,7 +2284,7 @@ const RG_ROUNDS = [
 ];
 
 const RG_INFO = {
-  btc:   { label: `Bitcoin ${SAT_IMG}`,    detail: '0% · Instantáneo',  stroke: '#c9a227', tc: '#f0d080', dash: '',    correct: true,  node: null },
+  btc:   { label: `Bitcoin ${SAT_IMG}`, svgLabel: 'Bitcoin ₿', detail: '0% · Instantáneo',  stroke: '#c9a227', tc: '#f0d080', dash: '',    correct: true,  node: null },
   wu:    { label: 'Western Union', detail: '-10% · 3 días',      stroke: '#8b2020', tc: '#ff9090', dash: '6,3', correct: false, node: '#8b2020' },
   banco: { label: 'Banco 🏦',      detail: '-8% · 5 días',       stroke: '#6b4c00', tc: '#c8a860', dash: '4,4', correct: false, node: '#6b4c00' },
 };
@@ -2345,7 +2345,7 @@ function rgDraw() {
         <rect x="${s.lx-52}" y="${s.ly}" width="104" height="28" rx="5"
               fill="rgba(8,4,0,0.88)" stroke="${inf.stroke}" stroke-width="1"/>
         <text x="${s.lx}" y="${s.ly+11}" text-anchor="middle"
-              fill="${inf.tc}" font-family="Special Elite,cursive" font-size="9.5">${inf.label}</text>
+              fill="${inf.tc}" font-family="Special Elite,cursive" font-size="9.5">${inf.svgLabel || inf.label}</text>
         <text x="${s.lx}" y="${s.ly+22}" text-anchor="middle"
               fill="${inf.tc}" font-family="Lora,serif" font-size="8.5" font-style="italic">${inf.detail}</text>
       </g>`;
