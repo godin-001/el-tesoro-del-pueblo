@@ -1240,7 +1240,7 @@ const SCENES = [
   },
   {
     type: 'dialogue', act: 'ACTO IV', bg: 'mercado', character: 'cantinflas',
-    text: 'Mire usted, esto del blockchain suena muy complicado, pero es como el chisme del vecindario: todo el mundo lo sabe, nadie lo puede negar y nadie lo puede cambiar.'
+    text: 'Mire usted, esto de la cadena de bloques suena muy complicado, pero es como el chisme del vecindario: todo el mundo lo sabe, nadie lo puede negar y nadie lo puede cambiar.'
   },
   {
     type: 'dialogue', act: 'ACTO IV', bg: 'mercado', character: 'cantinflas',
@@ -1317,7 +1317,7 @@ const SCENES = [
         }
       },
       {
-        text: `${SAT_IMG} Con Bitcoin, directo a su wallet`,
+        text: `${SAT_IMG} Con Bitcoin, directo a su billetera`,
         stars: 1,
         feedback: {
           icon: SAT_IMG, result: '¡Ganaste!',
@@ -1351,11 +1351,11 @@ const SCENES = [
 
 // ── MINI-GAME DATA ────────────────────────────────────
 const MINIGAME_STEPS = [
-  { id: 1, text: 'Tú creas la transacción en tu wallet' },
+  { id: 1, text: 'Tú creas la transacción en tu billetera' },
   { id: 2, text: 'La firmas con tu llave privada' },
   { id: 3, text: 'La transmites a la red Bitcoin' },
   { id: 4, text: 'Los mineros la verifican' },
-  { id: 5, text: 'Queda confirmada en el blockchain para siempre' }
+  { id: 5, text: 'Queda confirmada en la cadena de bloques para siempre' }
 ];
 
 const CORRECT_ORDER = [1, 2, 3, 4, 5];
@@ -1501,8 +1501,8 @@ const ACHIEVEMENTS = [
   { id: 'compadre',  icon: '🎸', img: 'https://i.imgur.com/xwXl4IY.jpeg', name: 'Compadre del Pueblo', desc: 'Atrapa 9+ sats con Pedro Infante' },
   { id: 'balero',    icon: '🪀', img: 'https://i.imgur.com/NNoMHMa.jpeg', name: 'Maestro del Balero',  desc: 'Gana el Balero en el Acto II' },
   { id: 'ladona',    icon: '🔐', img: 'https://i.imgur.com/sg0SjgW.jpeg', name: 'La Doña',             desc: 'Abre la Caja Fuerte en el Acto III' },
-  { id: 'lightning', icon: '<img src="sat-icon.png" style="width:1.8rem;height:1.8rem;object-fit:contain;">', img: 'https://i.imgur.com/UGP2vCa.jpeg', name: 'Rayo Lightning', desc: 'Ordena el blockchain en el Acto IV' },
-  { id: 'hodler',    icon: '💎', img: 'https://i.imgur.com/8tx842i.jpeg', name: 'HODLer',              desc: 'Salva 75%+ en La Carrera del Tiempo' },
+  { id: 'lightning', icon: '<img src="sat-icon.png" style="width:1.8rem;height:1.8rem;object-fit:contain;">', img: 'https://i.imgur.com/UGP2vCa.jpeg', name: 'Rayo Relámpago', desc: 'Ordena la cadena de bloques en el Acto IV' },
+  { id: 'hodler',    icon: '💎', img: 'https://i.imgur.com/8tx842i.jpeg', name: 'Guardián',            desc: 'Salva 75%+ en La Carrera del Tiempo' },
   { id: 'fronteras', icon: '🗺️', img: 'https://i.imgur.com/HTF3kSq.jpeg', name: 'Sin Fronteras',       desc: 'Elige 3/3 rutas correctas con Dolores' },
 ];
 
@@ -2900,7 +2900,7 @@ function renderEnding() {
           Pedro Infante · María Félix · Cantinflas<br>
           Jorge Negrete · Dolores del Río<br>
           y El Cacique como el villano<br><br>
-          MÚSICA DE LA ÉPOCA · BITCOIN EDUCATION<br>
+          MÚSICA DE LA ÉPOCA · EDUCACIÓN BITCOIN<br>
           HACKATHON BITCOIN MÉXICO 2026
         </div>
 
@@ -2913,9 +2913,9 @@ function renderEnding() {
           <!-- CLAIM SECTION -->
           <div class="claim-section">
             <input class="ln-input" id="ln-address" type="text"
-              placeholder="tu@lightningaddress.com" />
+              placeholder="tu@direccion-lightning.com" />
             <button class="btn-claim" onclick="claimSats()">
-              ${SAT_IMG} Reclamar ${walletFinal.satBalance} sats vía Lightning
+              ${SAT_IMG} Reclamar ${walletFinal.satBalance} sats vía Red Relámpago
             </button>
             <div class="claim-status" id="claim-status"></div>
           </div>
@@ -3059,7 +3059,7 @@ async function claimSats() {
   const w = loadWallet();
 
   if (!address || !address.includes('@')) {
-    statusEl.textContent = '⚠️ Ingresa una Lightning Address válida (ej: tu@walletofsatoshi.com)';
+    statusEl.textContent = '⚠️ Ingresa una Dirección Lightning válida (ej: tu@billetera-satoshi.com)';
     return;
   }
   if (w.satBalance <= 0) {
@@ -3072,7 +3072,7 @@ async function claimSats() {
 
   // Simulate ZEBEDEE API call (replace with real API key + endpoint)
   await new Promise(r => setTimeout(r, 1500));
-  statusEl.textContent = '📡 Enviando pago Lightning...';
+  statusEl.textContent = '📡 Enviando pago por Red Relámpago...';
   await new Promise(r => setTimeout(r, 1500));
 
   // Mock response — replace with real ZEBEDEE API:
