@@ -2686,19 +2686,19 @@ function jgEndGame() {
 // ── CATCH GAME — PEDRO INFANTE ────────────────────────
 const CG = {
   items: [], basketPct: 50, caught: 0, hit: 0,
-  spawnCount: 0, spawnTimer: 0, maxSpawn: 35,
+  spawnCount: 0, spawnTimer: 0, maxSpawn: 32,
   cgSequence: [],
   over: false, animId: null, lastTime: 0, nextScene: null
 };
 
 function renderCatchGame(scene) {
   hideHUD();
-  // Generar secuencia fija: 15 monedas + 20 billetes, mezclados
-  const seq = [...Array(15).fill(true), ...Array(20).fill(false)]
+  // Generar secuencia fija: 15 monedas + 17 billetes, mezclados
+  const seq = [...Array(15).fill(true), ...Array(17).fill(false)]
     .sort(() => Math.random() - 0.5);
   Object.assign(CG, {
     items: [], basketPct: 50, caught: 0, hit: 0,
-    spawnCount: 0, spawnTimer: 0, maxSpawn: 35,
+    spawnCount: 0, spawnTimer: 0, maxSpawn: 32,
     cgSequence: seq,
     over: false, animId: null, lastTime: performance.now(),
     nextScene: scene.next
