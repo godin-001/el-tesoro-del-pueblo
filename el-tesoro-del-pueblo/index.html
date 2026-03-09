@@ -1118,7 +1118,8 @@ const state = {
   stars: 0,
   maxStars: 5,
   sceneIndex: 0,
-  satsEarnedThisRun: 0
+  satsEarnedThisRun: 0,
+  achievementsThisRun: []
 };
 
 const SAT_IMG = '<img class="sat-img" src="sat-icon.png" alt="sat">';
@@ -1506,12 +1507,16 @@ const ACHIEVEMENTS = [
 ];
 
 function unlockAchievement(id) {
+  // Siempre registrar en la partida actual
+  if (!state.achievementsThisRun.includes(id)) state.achievementsThisRun.push(id);
+  // Persistir en wallet solo si es nuevo
   const w = loadWallet();
-  if (w.achievements.includes(id)) return false;
-  w.achievements.push(id);
-  saveWallet(w);
-  const ach = ACHIEVEMENTS.find(a => a.id === id);
-  if (ach) showToast(`🏆 ¡Logro desbloqueado! ${ach.icon} ${ach.name}`);
+  if (!w.achievements.includes(id)) {
+    w.achievements.push(id);
+    saveWallet(w);
+    const ach = ACHIEVEMENTS.find(a => a.id === id);
+    if (ach) showToast(`🏆 ¡Logro desbloqueado! ${ach.icon} ${ach.name}`);
+  }
   return true;
 }
 
@@ -2902,9 +2907,9 @@ function renderEnding() {
         <div style="font-family:'Special Elite',cursive;font-size:0.72rem;letter-spacing:0.2rem;color:var(--gold);text-transform:uppercase;margin-bottom:0.4rem;">Logros</div>
         <div class="achievement-grid">
           ${ACHIEVEMENTS.map(a => `
-            <div class="achievement-badge ${walletFinal.achievements.includes(a.id) ? '' : 'locked'}" title="${a.desc}">
+            <div class="achievement-badge ${state.achievementsThisRun.includes(a.id) ? '' : 'locked'}" title="${a.desc}">
               <span class="badge-icon">
-                ${walletFinal.achievements.includes(a.id)
+                ${state.achievementsThisRun.includes(a.id)
                   ? `<img src="${a.img}" alt="${a.name}">`
                   : a.icon}
               </span>
@@ -3079,6 +3084,7 @@ function restartGame() {
   state.sceneIndex = 0;
   state.playerName = '';
   state.satsEarnedThisRun = 0;
+  state.achievementsThisRun = [];
   updateHUD();
   renderTitle();
 }
