@@ -2637,25 +2637,30 @@ function cgLoop(timestamp) {
   }
 
   const done = [];
+  const basketEl  = document.getElementById('cg-basket');
+  const areaRect  = area.getBoundingClientRect();
+  const bRect     = basketEl ? basketEl.getBoundingClientRect() : null;
+
   for (const item of CG.items) {
     item.y += item.speed * dt;
     const el = document.getElementById(item.id);
     if (!el) { done.push(item); continue; }
     el.style.top = item.y + 'px';
 
-    if (item.y >= basketY && item.y < basketY + 48) {
-      const itemX   = (item.xPct / 100) * aW;
-      const basketX = (CG.basketPct / 100) * aW;
-      if (Math.abs(itemX - basketX) < 50) {
-        const b = document.getElementById('cg-basket');
+    // Colisión pixel-perfect: borde inferior del ítem toca el sombrero
+    if (bRect) {
+      const eRect = el.getBoundingClientRect();
+      const vertOk  = eRect.bottom >= bRect.top  && eRect.top  <= bRect.bottom;
+      const horizOk = eRect.right  >= bRect.left && eRect.left <= bRect.right;
+      if (vertOk && horizOk) {
         if (item.isSat) {
           CG.caught++;
           document.getElementById('cg-caught').textContent = CG.caught;
-          if (b) { b.style.filter = 'drop-shadow(0 0 10px #f0d080)'; setTimeout(() => { if(b) b.style.filter=''; }, 200); }
+          if (basketEl) { basketEl.style.filter = 'drop-shadow(0 0 10px #f0d080)'; setTimeout(() => { if(basketEl) basketEl.style.filter=''; }, 200); }
         } else {
           CG.hit++;
           document.getElementById('cg-hit').textContent = CG.hit;
-          if (b) { b.style.filter = 'hue-rotate(180deg) brightness(1.5)'; setTimeout(() => { if(b) b.style.filter=''; }, 300); }
+          if (basketEl) { basketEl.style.filter = 'hue-rotate(180deg) brightness(1.5)'; setTimeout(() => { if(basketEl) basketEl.style.filter=''; }, 300); }
         }
         el.remove(); done.push(item); continue;
       }
