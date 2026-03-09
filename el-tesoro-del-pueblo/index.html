@@ -1043,6 +1043,38 @@
     #music-btn.visible { display: flex; }
     #music-btn:hover { background: rgba(201,162,39,0.2); transform: scale(1.1); }
 
+    /* ── PAPEL PICADO (ending) ─────────────────────────────── */
+    #papel-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      overflow: hidden;
+    }
+    .papel-piece {
+      position: absolute;
+      top: -40px;
+      border-radius: 2px;
+      opacity: 0.93;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+    }
+    @keyframes papelFallL {
+      0%   { top: -40px;  transform: translateX(0px)   rotate(0deg);   opacity: 0.93; }
+      25%  { top: 25vh;   transform: translateX(28px)  rotate(180deg); }
+      50%  { top: 50vh;   transform: translateX(-18px) rotate(360deg); }
+      75%  { top: 75vh;   transform: translateX(32px)  rotate(540deg); }
+      100% { top: 110vh;  transform: translateX(4px)   rotate(720deg); opacity: 0.65; }
+    }
+    @keyframes papelFallR {
+      0%   { top: -40px;  transform: translateX(0px)    rotate(0deg);    opacity: 0.93; }
+      25%  { top: 25vh;   transform: translateX(-28px)  rotate(-180deg); }
+      50%  { top: 50vh;   transform: translateX(18px)   rotate(-360deg); }
+      75%  { top: 75vh;   transform: translateX(-32px)  rotate(-540deg); }
+      100% { top: 110vh;  transform: translateX(-4px)   rotate(-720deg); opacity: 0.65; }
+    }
+
   </style>
 </head>
 <body>
@@ -2810,6 +2842,55 @@ function renderEnding() {
         </button>
       </div>
     </div>`;
+
+  // 🎊 Animación de papel picado festivo
+  launchPapelPicado();
+}
+
+// ── PAPEL PICADO ───────────────────────────────────────
+function launchPapelPicado() {
+  // Limpiar overlay anterior si existe
+  const existing = document.getElementById('papel-overlay');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'papel-overlay';
+  document.body.appendChild(overlay);
+
+  // Colores festivos mexicanos: papel picado tradicional
+  const colors = [
+    '#FF1744', '#FF4081', '#FF9800', '#FFD600',
+    '#00E676', '#40C4FF', '#E040FB', '#FFFFFF',
+    '#FF6D00', '#00BFA5', '#F50057', '#AEEA00',
+    '#C9A227', '#FF6E40', '#EA80FC', '#18FFFF'
+  ];
+
+  const count = 100;
+  for (let i = 0; i < count; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'papel-piece';
+
+    const w     = 7  + Math.random() * 10;          // 7–17px ancho
+    const h     = 11 + Math.random() * 16;          // 11–27px alto
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const left  = Math.random() * 100;              // 0–100% horizontal
+    const dur   = 3.5 + Math.random() * 3.5;       // 3.5–7s caída
+    const delay = Math.random() * 3.2;             // 0–3.2s retraso
+    const anim  = Math.random() > 0.5 ? 'papelFallL' : 'papelFallR';
+
+    piece.style.cssText = `
+      width:${w}px; height:${h}px;
+      background:${color};
+      left:${left}%;
+      animation-name:${anim};
+      animation-duration:${dur}s;
+      animation-delay:${delay}s;
+    `;
+    overlay.appendChild(piece);
+  }
+
+  // Auto-limpiar al terminar la animación (duración máx + retraso máx + buffer)
+  setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 11000);
 }
 
 // ── SHARE ─────────────────────────────────────────────
@@ -2906,6 +2987,9 @@ async function claimSats() {
 
 // ── RESTART ───────────────────────────────────────────
 function restartGame() {
+  // Limpiar papel picado si aún está activo
+  const papel = document.getElementById('papel-overlay');
+  if (papel) papel.remove();
   const end = document.getElementById('ending-audio');
   if (end) { end.pause(); end.currentTime = 0; }
   const audio = document.getElementById('bgm-audio');
