@@ -616,7 +616,7 @@
       transition: all 0.3s;
     }
     #sat-hud .hud-sats { font-weight: bold; color: var(--gold); }
-    .sat-img { width: 2em; height: 2em; vertical-align: middle; object-fit: contain; display: inline-block; }
+    .sat-img { width: 4em; height: 4em; vertical-align: middle; object-fit: contain; display: inline-block; }
     #sat-hud .hud-streak { color: #ff8c00; }
 
     /* ══════════════════════════════
@@ -2614,7 +2614,7 @@ function cgSpawnItem() {
   const id    = `cgi-${CG.spawnCount}`;
   const el    = document.createElement('div');
   el.id = id; el.className = 'cg-item';
-  el.innerHTML = isSat ? '<img src="sat-icon.png" style="width:2.4rem;height:2.4rem;object-fit:contain;">' : '💸';
+  el.innerHTML = isSat ? '<img src="sat-icon.png" style="width:4.8rem;height:4.8rem;object-fit:contain;">' : '💸';
   el.style.left = xPct + '%'; el.style.top = '-32px';
   area.appendChild(el);
   CG.items.push({ id, isSat, xPct, y: -32, speed });
@@ -2722,7 +2722,7 @@ function renderEnding() {
 
         <div class="divider" style="margin:0.8rem auto;"></div>
 
-        <div class="poster-stars"><img src="sat-icon.png" style="width:3.5rem;height:3.5rem;object-fit:contain;vertical-align:middle;"></div>
+        <div class="poster-stars"><img src="sat-icon.png" style="width:7rem;height:7rem;object-fit:contain;vertical-align:middle;"></div>
         <div class="poster-stars-label" style="font-size:1.6rem;color:var(--gold-light);font-family:'Playfair Display',serif;font-weight:700;">
           ${state.satsEarnedThisRun} SATS GANADOS
         </div>
