@@ -2716,7 +2716,7 @@ function renderEnding() {
   const bgm = document.getElementById('bgm-audio');
   if (bgm) { bgm.pause(); }
   const end = document.getElementById('ending-audio');
-  if (end) { end.volume = 0.20; end.currentTime = 0; end.play().catch(() => {}); }
+  if (end) { end.volume = 0.13; end.currentTime = 0; end.play().catch(() => {}); }
   // Award flat completion bonus
   awardSats(50, 'Juego completado');
 
